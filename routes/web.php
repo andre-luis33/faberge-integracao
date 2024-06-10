@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DeliveryTimeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,4 +48,13 @@ Route::prefix('/admin')->middleware('auth')->group(function () {
 Route::prefix('/api')->group(function () {
 
    Route::post('/login', [AuthController::class, 'login'])->name('api.login');
+
+   Route::middleware('auth')->group(function() {
+
+      Route::prefix('/delivery-time')->group(function() {
+         Route::get('/', [DeliveryTimeController::class, 'index']);
+         Route::put('/', [DeliveryTimeController::class, 'update']);
+      });
+
+   });
 });
