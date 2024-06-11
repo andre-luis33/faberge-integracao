@@ -3,7 +3,16 @@
       <i class="fas fa-times"></i>
    </a>
 
-   @if (isset($slot))
-      {!! $slot !!}
-   @endif
+   <div id="main-card-loader" class="loader">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+   </div>
+
+   <div class="main-wrapper">
+      @if (isset($slot))
+         {!! $slot !!}
+      @endif
+   </div>
 </div>

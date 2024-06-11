@@ -1,82 +1,67 @@
 * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+   padding: 0;
+   margin: 0;
+   box-sizing: border-box;
 }
 
 body {
-    height: 100vh;
-    width: 100vw;
+   height: 100vh;
+   width: 100vw;
 
-    background-image: url('../img/login-background.png');
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
+   background-image: url('../img/login-background.png');
+   background-position: center;
+   background-size: cover;
+   background-repeat: no-repeat;
 
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 15vw;
+   display: flex;
+   align-items: center;
+   justify-content: flex-end;
+   padding-right: 15vw;
 
-    background-color: #F3F3F3;
+   background-color: #F3F3F3;
 }
 
 ul {
-    list-style: none;
-    margin-bottom: 0;
+   list-style: none;
+   margin-bottom: 0;
 }
 
 .login-card {
-    width: 400px;
+   width: 400px;
 }
 
 .login-card .title {
-    text-align: center;
-    margin-bottom: 40px;
-    font-weight: normal;
-    color: var(--purple-primary);
-    font-size: 3.5rem;
+   text-align: center;
+   margin-bottom: 40px;
+   font-weight: normal;
+   color: var(--purple-primary);
+   font-size: 3.5rem;
 }
 
 .login-card .title span {
-    font-weight: 900;
-    background: linear-gradient(90deg, #9393fd 0%, #3b3bc1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    color: transparent;
-}
-
-.login-card .input-wrapper {
-    position: relative;
-    margin-bottom: 20px;
-}
-
-.login-card i {
-    position: absolute;
-    top: 13px;
-    left: 20px;
-    font-size: 1.3rem;
-    color: var(--purple-tertiary);
+   font-weight: 900;
+   background: linear-gradient(90deg, #9393fd 0%, #3b3bc1 100%);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   background-clip: text;
+   color: transparent;
 }
 
 .login-card input {
-    height: 45px;
-    font-size: 1.2rem;
-    padding-left: 50px;
-    background-color: transparent;
+   font-size: 1.2rem;
+   background-color: transparent;
 }
 
 .login-card button {
-    display: table;
-    margin: 0 auto;
-    width: 50%;
-    height: 45px;
+   display: table;
+   margin: 0 auto;
+   width: 50%;
+   height: 45px;
 }
 
 @media (max-width: 768px) {
-    body {
-        padding-inline: 15px;
+   body {
+      padding-inline: 15px;
 
-    }
+   }
 }

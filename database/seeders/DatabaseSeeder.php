@@ -15,8 +15,14 @@ class DatabaseSeeder extends Seeder
    {
       \App\Models\User::create([
          'name' => 'Admin Faberge',
-         'cnpj' => '02755413000101',
+         'email' => 'admin@faberge.com.br',
          'password' => Hash::make('senha123@@')
+      ]);
+
+      \App\Models\IntegrationSettings::create([
+         'enabled' => true,
+         'interval' => 30,
+         'user_id' => 1
       ]);
    }
 }

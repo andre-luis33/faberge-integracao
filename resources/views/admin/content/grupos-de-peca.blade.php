@@ -64,7 +64,7 @@
             </table>
          </div>
 
-         <div class="d-flex justify-content-end mt-5 pr-4">
+         <div class="form-btns-bottom">
             <button class="btn btn-success mr-2">
                <i class="fas fa-check"></i>
                Salvar Alterações

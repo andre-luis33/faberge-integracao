@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeliveryTimeController;
+use App\Http\Controllers\IntegrationSettingsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,9 +40,9 @@ Route::prefix('/admin')->middleware('auth')->group(function () {
       return view('admin.content.grupos-de-peca');
    })->name('admin.grupos-de-peca');
 
-   Route::get('/parametro', function () {
-      return view('admin.content.parametro');
-   })->name('admin.parametro');
+   Route::get('/integracao', function () {
+      return view('admin.content.integracao');
+   })->name('admin.integracao');
 });
 
 
@@ -54,6 +55,11 @@ Route::prefix('/api')->group(function () {
       Route::prefix('/delivery-time')->group(function() {
          Route::get('/', [DeliveryTimeController::class, 'index']);
          Route::put('/', [DeliveryTimeController::class, 'update']);
+      });
+
+      Route::prefix('/integration-settings')->group(function() {
+         Route::get('/', [IntegrationSettingsController::class, 'index']);
+         Route::put('/', [IntegrationSettingsController::class, 'update']);
       });
 
    });

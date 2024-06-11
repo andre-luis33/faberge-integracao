@@ -11,14 +11,16 @@ return new class extends Migration
     */
    public function up(): void
    {
-      Schema::create('delivery_times', function (Blueprint $table) {
+      Schema::create('integration_settings', function (Blueprint $table) {
          $table->unsignedInteger('id', true);
-         $table->string('uf', 2);
-         $table->unsignedTinyInteger('days')->nullable();
+         $table->tinyInteger('interval')->default(true);
+         $table->string('linx_user', 50)->default(true);
+         $table->string('linx_password', 500)->default(true);
+         $table->string('cilia_token', 500)->default(true);
          $table->unsignedInteger('user_id');
+         $table->boolean('enabled')->default(true);
          $table->timestamps();
 
-         $table->unique(['uf', 'user_id']);
          $table->foreign('user_id')->references('id')->on('users');
       });
    }
@@ -28,6 +30,6 @@ return new class extends Migration
     */
    public function down(): void
    {
-      Schema::dropIfExists('delivery_times');
+      Schema::dropIfExists('integration_settings');
    }
 };

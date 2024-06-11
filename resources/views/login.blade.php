@@ -33,12 +33,12 @@
             @endif
 
             <div class="input-wrapper">
-                <i class="fas fa-user"></i>
-                <input type="text" name="cnpj" class="form-control" placeholder="CNPJ" value="{{ old('cnpj') }}">
+               <i class="fas fa-user"></i>
+               <input type="text" name="email" class="form-control" placeholder="E-mail" value="{{ old('email') }}">
             </div>
             <div class="input-wrapper">
-                <i class="fas fa-lock"></i>
-                <input type="password" name="password" class="form-control" placeholder="Senha">
+               <i class="fas fa-lock"></i>
+               <input type="password" name="password" class="form-control" placeholder="Senha">
             </div>
 
             <button class="btn btn-purple">Entrar</button>
@@ -48,4 +48,3 @@
 
 </body>
 </html>
-{{-- 02755413000101 --}}

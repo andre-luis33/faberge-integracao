@@ -16,10 +16,11 @@ class DeliveryTimeController extends Controller
 
    public function __construct(DeliveryTime $deliveryTime) {
       $this->deliveryTime = $deliveryTime;
+      $this->setSession();
    }
 
    public function index() {
-      $userId = session()->get('user.id');
+      $userId = $this->session->userId;
 
       $times = $this->deliveryTime
          ->select(['uf', 'days'])
@@ -39,7 +40,7 @@ class DeliveryTimeController extends Controller
       });
 
       $request->validate($validationArray);
-      $userId = session()->get('user.id');
+      $userId = $this->session->userId;
 
       $requestUfs = collect($request->all());
 

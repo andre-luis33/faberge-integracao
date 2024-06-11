@@ -1,4 +1,4 @@
-<aside class="navbar">
+<aside class="sidebar">
    <header>
       <img alt="Logo Grupo Faberge" src="{{ asset('assets/img/logo-faberge.png') }}">
    </header>
@@ -24,9 +24,9 @@
             </a>
          </li>
          <li>
-            <a class="{{ Request::is('admin/parametro') ? 'active' : ''}}" href="{{route('admin.parametro')}}">
-               <i class="fas fa-sliders-h"></i>
-               <span>Parâmetro</span>
+            <a class="{{ Request::is('admin/integracao') ? 'active' : ''}}" href="{{route('admin.integracao')}}">
+               <i class="fas fa-project-diagram"></i>
+               <span>Integração</span>
             </a>
          </li>
       </ul>
@@ -37,7 +37,7 @@
       </a>
    </nav>
 
-   <button onclick="document.querySelector('.navbar').classList.toggle('closed')" class="btn-rounded">
+   <button id="sidebar-btn" class="btn-rounded">
       <i class="fas fa-angle-left"></i>
    </button>
 </aside>

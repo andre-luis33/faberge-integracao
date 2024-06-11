@@ -22,9 +22,9 @@
             <i class="fas fa-cog"></i>
             Grupo de Peças
          </a>
-         <a href="{{route('admin.parametro')}}" class="btn btn-purple">
-            <i class="fas fa-sliders-h"></i>
-            Parâmetro
+         <a href="{{route('admin.integracao')}}" class="btn btn-purple">
+            <i class="fas fa-project-diagram"></i>
+            Integração
          </a>
       </div>
    </div>
