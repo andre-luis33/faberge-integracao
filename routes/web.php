@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeliveryTimeController;
 use App\Http\Controllers\IntegrationSettingsController;
+use App\Http\Controllers\PartGroupController;
+use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,7 +54,16 @@ Route::prefix('/api')->group(function () {
 
    Route::middleware('auth')->group(function() {
 
-      Route::prefix('/delivery-time')->group(function() {
+      Route::prefix('/session')->group(function() {
+         Route::put('/sidebar', [SessionController::class, 'sidebar']);
+      });
+
+      Route::prefix('/part-groups')->group(function() {
+         Route::get('/', [PartGroupController::class, 'index']);
+         Route::put('/', [PartGroupController::class, 'update']);
+      });
+
+      Route::prefix('/delivery-times')->group(function() {
          Route::get('/', [DeliveryTimeController::class, 'index']);
          Route::put('/', [DeliveryTimeController::class, 'update']);
       });

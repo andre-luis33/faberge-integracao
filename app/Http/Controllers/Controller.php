@@ -22,6 +22,7 @@ class Controller extends BaseController
                session()->get('user.id'),
                session()->get('user.name'),
                session()->get('user.email'),
+               (bool) session()->get('user.sidebar.closed'),
             );
          }
 

@@ -28,6 +28,7 @@ class AuthController extends Controller
       $request->session()->put('user.id', $user->id);
       $request->session()->put('user.name', $user->name);
       $request->session()->put('user.email', $user->email);
+      $request->session()->put('user.sidebar.closed', false);
 
       // return response()->json(['message' => 'Sucesso'], 200);
       return redirect()->route('admin.inicio');

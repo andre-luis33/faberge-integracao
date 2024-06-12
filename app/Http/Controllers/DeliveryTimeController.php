@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class DeliveryTimeController extends Controller
 {
@@ -32,17 +33,22 @@ class DeliveryTimeController extends Controller
 
    public function update(Request $request) {
 
-      $validationArray = [];
-      $ufs = Data::getUfs()->keys();
+      $validation = [
+         '*.uf' => 'required|string|size:2',
+         '*.days' => 'nullable|integer|min:1'
+      ];
 
-      $ufs->each(function($uf) use (&$validationArray) {
-         $validationArray[$uf] = 'nullable|integer|gt:0';
-      });
-
-      $request->validate($validationArray);
+      $request->validate($validation);
       $userId = $this->session->userId;
 
       $requestUfs = collect($request->all());
+
+      // Verifica se todas as UFs estão presentes no payload
+      $ufs = Data::getUfs()->keys();
+      $requestUfsKeys = $requestUfs->pluck('uf');
+
+      if ($requestUfsKeys->count() != $ufs->count())
+         return abort(400, 'Por favor, envie valores para todas as ' . $ufs->count() . ' UFs existentes no Brasil');
 
       try {
 
@@ -52,14 +58,14 @@ class DeliveryTimeController extends Controller
             ->where('user_id', $userId)
             ->delete();
 
-         $requestUfs->each(function($value, $key) use ($userId, $ufs) {
+         $requestUfs->each(function($uf) use ($userId, $ufs) {
 
-            if(!$ufs->contains($key))
+            if(!$ufs->contains($uf['uf']))
                return;
 
             $this->deliveryTime->create([
-               'uf'   => $key,
-               'days' => $value,
+               'uf'   => $uf['uf'],
+               'days' => $uf['days'],
                'user_id' => $userId
             ]);
 

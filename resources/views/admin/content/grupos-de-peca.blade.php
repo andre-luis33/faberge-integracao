@@ -37,9 +37,9 @@
                </thead>
                <tbody>
                   <tr>
-                     <td>Grupo A</td>
+                     <td data-category="Grupo A">Grupo A</td>
                      <td>
-                        <select name="" id="" class="form-control">
+                        <select name="" id="" class="form-control" data-required>
                            <option value="">Nenhum</option>
                            <option value="">Genuína</option>
                            <option value="">Original</option>
@@ -49,9 +49,9 @@
                      </td>
                   </tr>
                   <tr>
-                     <td>Grupo B</td>
+                     <td data-category="Grupo B">Grupo B</td>
                      <td>
-                        <select name="" id="" class="form-control">
+                        <select name="" id="" class="form-control" data-required>
                            <option value="">Nenhum</option>
                            <option value="">Genuína</option>
                            <option value="">Original</option>

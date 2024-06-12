@@ -3,6 +3,9 @@ import IntegrationSettingsService from "../services/IntegrationSettingsService.j
 
 jQuery(function() {
 
+   let LINX_PASSWORD_API_VALUE
+   let CILIA_TOKEN_API_VALUE
+
    const statusBtn = $('#status-btn')
    const intervalBtns = $('button[data-interval]')
    const linxUser = $('#linx-user')
@@ -48,19 +51,23 @@ jQuery(function() {
          return
       }
 
+      // prevents sending **** to the api when the user don't change their value
+      const password = linxPassword.val() === LINX_PASSWORD_API_VALUE ? null : linxPassword.val()
+      const token    = ciliaToken.val() === CILIA_TOKEN_API_VALUE ? null : ciliaToken.val()
 
       const payload = {
          interval,
          enabled,
          linx_user: linxUser.val(),
-         linx_password: linxPassword.val(),
-         cilia_token: ciliaToken.val()
+         linx_password: password,
+         cilia_token: token
       }
 
       try {
 
          await IntegrationSettingsService.update(payload, submitBtn)
          alerty.show('success', 'Sucesso!', 'Parâmetros de integração atualizados', 1)
+         renderPage()
 
       } catch {
 
@@ -75,7 +82,7 @@ jQuery(function() {
          loader.show()
 
          const settings = await IntegrationSettingsService.get()
-         const { enabled, interval } = settings
+         const { enabled, interval, linx_password, linx_user, cilia_token } = settings
 
          resetIntervalBtns()
 
@@ -83,6 +90,12 @@ jQuery(function() {
          checkIntervalBtn(intervalBtn)
 
          statusBtn.prop('checked', enabled)
+         linxUser.val(linx_user)
+         linxPassword.val(linx_password)
+         ciliaToken.val(cilia_token)
+
+         LINX_PASSWORD_API_VALUE = linx_password
+         CILIA_TOKEN_API_VALUE = cilia_token
 
       } catch {
 

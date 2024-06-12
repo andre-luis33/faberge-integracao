@@ -1,19 +1,16 @@
 import { API_URL } from "../config.js"
 
 /**
- * @typedef {object} IntegrationSettings
- * @property {string} linx_user
- * @property {string} linx_password
- * @property {string} cilia_token
- * @property {boolean} enabled
- * @property {number} interval
+ * @typedef {object} DeliveryTime
+ * @property {string} uf
+ * @property {number} days
  */
 
 
-const URL = `${API_URL}/integration-settings`
+const URL = `${API_URL}/delivery-times`
 
 /**
- * @returns {Promise<IntegrationSettings>}
+ * @returns {Promise<DeliveryTime[]>}
  */
 export async function get() {
 

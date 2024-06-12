@@ -74,8 +74,14 @@
                   <div class="col-md-3">
                      <div class="input-wrapper">
                         <i class="fas fa-lock"></i>
-                        <input class="form-control" type="password" id="linx-password" placeholder="Senha" data-required>
+                        <input class="form-control" type="text" id="linx-password" placeholder="Senha" data-required>
                      </div>
+                  </div>
+                  <div class="col-md-3">
+                     <button class="btn btn-purple">
+                        <i class="fas fa-wrench"></i>
+                        Testar Integração
+                     </button>
                   </div>
                </div>
             </div>
@@ -99,6 +105,12 @@
                         <i class="fas fa-key"></i>
                         <input class="form-control" type="text" id="cilia-token" placeholder="Token de Acesso" data-required>
                      </div>
+                  </div>
+                  <div class="col-md-3">
+                     <button class="btn btn-purple">
+                        <i class="fas fa-wrench"></i>
+                        Testar Integração
+                     </button>
                   </div>
                </div>
             </div>

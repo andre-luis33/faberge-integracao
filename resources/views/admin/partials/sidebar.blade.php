@@ -1,4 +1,4 @@
-<aside class="sidebar">
+<aside class="sidebar {{ session()->get('user.sidebar.closed') ? 'closed' : '' }}">
    <header>
       <img alt="Logo Grupo Faberge" src="{{ asset('assets/img/logo-faberge.png') }}">
    </header>

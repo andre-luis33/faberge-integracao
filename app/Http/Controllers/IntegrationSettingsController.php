@@ -33,8 +33,8 @@ class IntegrationSettingsController extends Controller
       $linxPassword = Crypt::decrypt($settings->linx_password);
       $ciliaToken = Crypt::decrypt($settings->cilia_token);
 
-      $settings->linx_password = Masks::secret($linxPassword);
-      $settings->cilia_token = Masks::secret($ciliaToken);
+      $settings->linx_password = $linxPassword ? Masks::secret($linxPassword) : null;
+      $settings->cilia_token = $ciliaToken ? Masks::secret($ciliaToken) : null;
 
       return response()->json($settings);
    }
@@ -44,13 +44,22 @@ class IntegrationSettingsController extends Controller
       $data = $request->validate([
          'enabled'       => 'required|boolean',
          'interval'      => 'required|integer|in:15,30,45,60',
-         'linx_user'     => 'required|string|max:50',
-         'linx_password' => 'required|string|max:50',
-         'cilia_token'   => 'required|string|max:100',
+         'linx_user'     => 'nullable|string|max:50',
+         'linx_password' => 'nullable|string|max:50',
+         'cilia_token'   => 'nullable|string|max:100',
       ]);
 
-      $data['cilia_token']   = Crypt::encrypt($request->input('cilia_token'));
-      $data['linx_password'] = Crypt::encrypt($request->input('linx_password'));
+      if(!$data['cilia_token'])
+         unset($data['cilia_token']);
+      else
+         $data['cilia_token'] = Crypt::encrypt($request->input('cilia_token'));
+
+
+      if(!$data['linx_password'])
+         unset($data['linx_password']);
+      else
+         $data['linx_password'] = Crypt::encrypt($request->input('linx_password'));
+
 
       $userId = $this->session->userId;
 

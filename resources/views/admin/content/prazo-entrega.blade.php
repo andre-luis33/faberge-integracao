@@ -17,7 +17,7 @@
             </h2>
          </div>
 
-         <div class="table-wrapper">
+         <form id="delivery-times-form" class="table-wrapper">
             <table class="form-table">
                <thead>
                   <tr>
@@ -224,10 +224,10 @@
                   </tr>
                </tbody>
             </table>
-         </div>
+         </form>
 
          <div class="form-btns-bottom">
-            <button class="btn btn-success mr-2">
+            <button class="btn btn-success mr-2" type="submit" form="delivery-times-form" id="btn-submit">
                <i class="fas fa-check"></i>
                Salvar Alterações
             </button>
@@ -241,3 +241,6 @@
 
 @endsection
 
+@section('scripts')
+   <script type="module" src="{{asset('assets/js/pages/prazo-entrega.js')}}"></script>
+@endsection
