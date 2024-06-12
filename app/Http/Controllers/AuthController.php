@@ -17,9 +17,7 @@ class AuthController extends Controller
       $credentials = $request->only('email', 'password');
 
       if (!Auth::attempt($credentials)) {
-         return back()->withErrors([
-            'error' => 'Usuário não encontrado'
-         ])->withInput();
+         abort(400, 'Usuário/Senha inválidos');
       }
 
       $user = Auth::user();
@@ -30,8 +28,7 @@ class AuthController extends Controller
       $request->session()->put('user.email', $user->email);
       $request->session()->put('user.sidebar.closed', false);
 
-      // return response()->json(['message' => 'Sucesso'], 200);
-      return redirect()->route('admin.inicio');
+      return response()->json(['message' => 'Sucesso'], 200);
    }
 
    public function logout(Request $request)
