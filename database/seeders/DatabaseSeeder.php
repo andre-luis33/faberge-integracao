@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
          'interval' => 30,
          'user_id' => 1,
          'linx_user' => 'FabergeLinx',
-         'linx_password' => Hash::make('senha123@@'),
+         'linx_password' => Crypt::encrypt('senha123@@'),
          'cilia_token' => Crypt::encrypt(Str::random(40))
       ]);
 
