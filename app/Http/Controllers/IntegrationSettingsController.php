@@ -30,8 +30,8 @@ class IntegrationSettingsController extends Controller
          ->where('user_id', $userId)
          ->first();
 
-      $linxPassword = Crypt::decrypt($settings->linx_password);
-      $ciliaToken = Crypt::decrypt($settings->cilia_token);
+      $linxPassword = Crypt::decrypt((string) $settings->linx_password);
+      $ciliaToken = Crypt::decrypt((string)   $settings->cilia_token);
 
       $settings->linx_password = $linxPassword ? Masks::secret($linxPassword) : null;
       $settings->cilia_token = $ciliaToken ? Masks::secret($ciliaToken) : null;
