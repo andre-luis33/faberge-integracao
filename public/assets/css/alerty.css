@@ -7,7 +7,7 @@
    flex-direction: column;
    justify-content: center;
    align-items: center;
-   z-index: 10001;
+   z-index: 100001;
 }
 
 .page-alert.success {

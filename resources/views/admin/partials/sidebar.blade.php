@@ -24,6 +24,12 @@
             </a>
          </li>
          <li>
+            <a class="{{ Request::is('admin/empresas') ? 'active' : ''}}" href="{{route('admin.empresas')}}">
+               <i class="far fa-building"></i>
+               <span>Empresas</span>
+            </a>
+         </li>
+         <li>
             <a class="{{ Request::is('admin/integracao') ? 'active' : ''}}" href="{{route('admin.integracao')}}">
                <i class="fas fa-project-diagram"></i>
                <span>Integração</span>

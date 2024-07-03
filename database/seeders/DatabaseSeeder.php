@@ -29,5 +29,21 @@ class DatabaseSeeder extends Seeder
          'linx_password' => Hash::make('senha123@@'),
          'cilia_token' => Crypt::encrypt(Str::random(40))
       ]);
+
+      \App\Models\Company::create([
+         'name' => 'Grupo Faberge',
+         'cnpj' => '06900979000211',
+         'primary' => true,
+         'active' => true,
+         'user_id' => 1,
+      ]);
+
+      \App\Models\Company::create([
+         'name' => 'Grupo Faberge - Maranhão',
+         'cnpj' => '06900979000212',
+         'primary' => false,
+         'active' => true,
+         'user_id' => 1,
+      ]);
    }
 }

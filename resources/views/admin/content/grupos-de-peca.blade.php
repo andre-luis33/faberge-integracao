@@ -1,12 +1,6 @@
 @extends('admin.dashboard')
 @section('title', 'Grupo de Peças')
 
-@php
-
-
-
-@endphp
-
 @section('content')
 
  <x-main-card>

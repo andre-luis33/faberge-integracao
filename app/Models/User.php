@@ -18,8 +18,11 @@ class User extends Authenticatable
       'password',
    ];
 
-
    protected $hidden = [
       'password',
    ];
+
+   public function companies() {
+      return $this->hasMany(Company::class);
+   }
 }

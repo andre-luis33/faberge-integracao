@@ -14,7 +14,7 @@ button {
    cursor: pointer;
 }
 
-.btn {
+.btn:not(.default) {
    border-radius: 30px;
 }
 
@@ -58,6 +58,10 @@ button {
 
 .text-purple-tertiary {
    color: var(--purple-tertiary);
+}
+
+.bg-purple-primary {
+   background-color: var(--purple-primary);
 }
 
 .input-wrapper {

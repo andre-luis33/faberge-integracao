@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DeliveryTimeController;
 use App\Http\Controllers\IntegrationSettingsController;
 use App\Http\Controllers\PartGroupController;
@@ -42,6 +43,10 @@ Route::prefix('/admin')->middleware('auth')->group(function () {
       return view('admin.content.grupos-de-peca');
    })->name('admin.grupos-de-peca');
 
+   Route::get('/empresas', function () {
+      return view('admin.content.empresas');
+   })->name('admin.empresas');
+
    Route::get('/integracao', function () {
       return view('admin.content.integracao');
    })->name('admin.integracao');
@@ -55,7 +60,15 @@ Route::prefix('/api')->group(function () {
    Route::middleware('auth')->group(function() {
 
       Route::prefix('/session')->group(function() {
+         Route::get('/', [SessionController::class, 'index']);
          Route::put('/sidebar', [SessionController::class, 'sidebar']);
+         Route::put('/active-company/{id}', [SessionController::class, 'activeCompany']);
+      });
+
+      Route::prefix('/companies')->group(function() {
+         Route::get('/',  [CompanyController::class, 'index']);
+         Route::post('/', [CompanyController::class,  'store']);
+         Route::put('/{id}', [CompanyController::class,  'update']);
       });
 
       Route::prefix('/part-groups')->group(function() {

@@ -43,6 +43,7 @@ export function allFieldsHaveValue(fieldsSelector, shouldCallAlert = false) {
 
       } else {
 
+
          if (inputValue.trim() == '' || (input.getAttribute('type') === 'email' && !isEmailValid(inputValue))) {
             input.classList.add('is-invalid')
             flag = false
@@ -304,6 +305,21 @@ export const dateHelper = {
 
    currentDate: new Date(),
 
+   formatToBr: function(dateString) {
+      const date = new Date(dateString);
+
+      const options = {
+         day: '2-digit',
+         month: '2-digit',
+         year: 'numeric',
+         hour: '2-digit',
+         minute: '2-digit',
+         hour12: false
+      };
+
+      return date.toLocaleString('pt-BR', options).replace(',', ' às');
+   },
+
    formatFromDateObj: {
 
       /**
@@ -410,7 +426,7 @@ export const alerty = {
       if (duration != 0)
          alerty.setProgress(duration, pageAlert, pageAlertProgressBar)
 
-      pageAlert.click(() => closeAlert(elementRef))
+      pageAlert.click(() => alerty.hide(elementRef))
    },
 
    hide: function (elementRef = false) {
