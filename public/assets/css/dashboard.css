@@ -48,6 +48,50 @@ main {
    transition: .3s all;
 }
 
+.btn-change-company {
+   background-color: var(--purple-primary);
+   color: #fff;
+
+   padding: 10px 10px 10px 20px;
+   margin-bottom: 15px;
+
+   display: flex;
+   align-items: center;
+   gap: 15px;
+   border: none;
+
+   width: 100%;
+   transition: .1s all;
+}
+
+.btn-change-company:hover {
+   background-color: var(--purple-secondary);
+}
+
+.btn-change-company .left-icon {
+   font-size: 2rem;
+}
+
+.btn-change-company .text-wrapper {
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   width: 100%;
+}
+
+.btn-change-company .text-wrapper span:first-child {
+   font-weight: bold;
+}
+
+.btn-change-company .text-wrapper span:last-child {
+   margin-top: 5px;
+   background-color: #F3F3F3;
+   color: var(--purple-primary);
+   font-size: .8rem;
+   padding: 0 10px;
+   border-radius: 15px;
+}
+
 .sidebar.closed {
    width: 70px;
 }

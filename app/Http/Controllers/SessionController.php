@@ -27,9 +27,13 @@ class SessionController extends Controller
 
       if(!$choosenCompany)
          abort(400, 'A empresa selecionada não existe!');
+      else if ($choosenCompany->id === $this->session->company->id)
+         return response(status: 204);
 
       session()->put('user.company.id', $choosenCompany->id);
       session()->put('user.company.name', $choosenCompany->name);
       session()->put('user.company.cnpj', $choosenCompany->cnpj);
+
+      return response(status: 204);
    }
 }

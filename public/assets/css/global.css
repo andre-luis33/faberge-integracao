@@ -77,7 +77,7 @@ button {
    color: var(--purple-tertiary);
 }
 
-.input-wrapper input {
+.input-wrapper :is(input, select) {
    padding-left: 45px;
    height: 40px;
 }

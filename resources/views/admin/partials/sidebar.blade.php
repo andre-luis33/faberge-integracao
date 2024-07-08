@@ -3,6 +3,20 @@
       <img alt="Logo Grupo Faberge" src="{{ asset('assets/img/logo-faberge.png') }}">
    </header>
 
+   <button class="btn-change-company" data-toggle="modal" data-target="#change-company-modal">
+      <i class="fas fa-building left-icon"></i>
+
+      <div class="text-wrapper">
+         <span>
+            {{ session()->get('user.company.name') }}
+         </span>
+         <span>
+            <i class="fas fa-sync-alt"></i>
+            Trocar
+         </span>
+      </div>
+   </button>
+
    <nav>
       <ul class="menu">
          <li>

@@ -1,5 +1,16 @@
 import { API_URL } from "../config.js"
 
+export async function updateCurrentCompany(companyId, btn) {
+
+   const config = {
+      method: 'PUT',
+      url: `${API_URL}/session/active-company/${companyId}`,
+      waitButton: btn
+   }
+
+   return $.ajax(config)
+}
+
 export async function updateSidebarStatus(closed) {
 
    const config = {
@@ -12,5 +23,5 @@ export async function updateSidebarStatus(closed) {
 }
 
 export default {
-   updateSidebarStatus
+   updateSidebarStatus, updateCurrentCompany
 }
