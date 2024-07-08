@@ -48,7 +48,7 @@ main {
    transition: .3s all;
 }
 
-.btn-change-company {
+.sidebar .btn-change-company {
    background-color: var(--purple-primary);
    color: #fff;
 
@@ -62,6 +62,10 @@ main {
 
    width: 100%;
    transition: .1s all;
+}
+
+.sidebar.closed .btn-change-company .text-wrapper {
+   display: none;
 }
 
 .btn-change-company:hover {
@@ -106,7 +110,7 @@ main {
 }
 
 .sidebar nav {
-   height: 90%;
+   height: 65vh;
 
    display: flex;
    flex-direction: column;
