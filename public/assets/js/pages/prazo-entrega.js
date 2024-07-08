@@ -1,6 +1,5 @@
 import { alerty, allFieldsHaveValue, loader } from "../helper.js"
 import DeliveryTimeService from "../services/DeliveryTimeService.js"
-import IntegrationSettingsService from "../services/DeliveryTimeService.js"
 
 jQuery(function() {
 
