@@ -1,0 +1,11 @@
+.form-table .form-control {
+   height: 40px !important;
+}
+
+.form-table .input-wrapper {
+   margin-bottom: 0;
+}
+
+.form-table tbody td {
+   padding-right: 10px;
+}

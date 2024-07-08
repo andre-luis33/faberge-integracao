@@ -13,6 +13,8 @@
    <link rel="stylesheet" href=" {{ asset('assets/css/alerty.css') }} ">
    <link rel="stylesheet" href=" {{ asset('assets/css/dashboard.css') }} ">
 
+   @yield('styles')
+
    <title>Faberge Integração</title>
 </head>
 <body>
