@@ -18,11 +18,11 @@ class PartGroupController extends Controller
    }
 
    public function index() {
-      $userId = $this->session->userId;
+      $companyId = $this->session->company->id;
 
       $parts = $this->partGroup
          ->select(['category', 'type'])
-         ->where('user_id', $userId)
+         ->where('company_id', $companyId)
          ->get();
 
       return response()->json($parts);
@@ -36,7 +36,7 @@ class PartGroupController extends Controller
       ];
 
       $request->validate($validation);
-      $userId = $this->session->userId;
+      $companyId = $this->session->company->id;
 
       $partGroups = collect($request->all());
 
@@ -45,15 +45,15 @@ class PartGroupController extends Controller
          DB::beginTransaction();
 
          $this->partGroup
-            ->where('user_id', $userId)
+            ->where('company_id', $companyId)
             ->delete();
 
-         $partGroups->each(function($partGroup) use ($userId) {
+         $partGroups->each(function($partGroup) use ($companyId) {
 
             $this->partGroup->create([
                'category'   => $partGroup['category'],
                'type' => $partGroup['type'],
-               'user_id' => $userId
+               'company_id' => $companyId
             ]);
 
          });

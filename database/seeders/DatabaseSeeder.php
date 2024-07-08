@@ -21,15 +21,6 @@ class DatabaseSeeder extends Seeder
          'password' => Hash::make('senha123@@')
       ]);
 
-      \App\Models\IntegrationSettings::create([
-         'enabled' => true,
-         'interval' => 30,
-         'user_id' => 1,
-         'linx_user' => 'FabergeLinx',
-         'linx_password' => Crypt::encrypt('senha123@@'),
-         'cilia_token' => Crypt::encrypt(Str::random(40))
-      ]);
-
       \App\Models\Company::create([
          'name' => 'Grupo Faberge',
          'cnpj' => '06900979000211',
@@ -44,6 +35,27 @@ class DatabaseSeeder extends Seeder
          'primary' => false,
          'active' => true,
          'user_id' => 1,
+      ]);
+
+      \App\Models\IntegrationSettings::create([
+         'enabled' => true,
+         'interval' => 30,
+         'company_id' => 1,
+         'linx_user' => 'FabergeLinx',
+         'linx_password' => Crypt::encrypt('senha123@@'),
+         'cilia_token' => Crypt::encrypt(Str::random(40))
+      ]);
+
+      \App\Models\DeliveryTime::create([
+         'uf' => 'RJ',
+         'days' => '2',
+         'company_id' => 1,
+      ]);
+
+      \App\Models\DeliveryTime::create([
+         'uf' => 'SP',
+         'days' => '3',
+         'company_id' => 1,
       ]);
    }
 }

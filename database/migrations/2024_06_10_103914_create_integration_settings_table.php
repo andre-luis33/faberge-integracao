@@ -17,11 +17,12 @@ return new class extends Migration
          $table->string('linx_user', 50)->default(true);
          $table->string('linx_password', 500)->default(true);
          $table->string('cilia_token', 500)->default(true);
-         $table->unsignedInteger('user_id');
+         $table->unsignedInteger('company_id');
          $table->boolean('enabled')->default(true);
          $table->timestamps();
 
-         $table->foreign('user_id')->references('id')->on('users');
+         $table->unique(['company_id']);
+         $table->foreign('company_id')->references('id')->on('companies');
       });
    }
 

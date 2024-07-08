@@ -12,7 +12,7 @@ class IntegrationSettings extends Model
    protected $fillable = [
       'interval',
       'enabled',
-      'user_id',
+      'company_id',
       'linx_user',
       'linx_password',
       'cilia_token',

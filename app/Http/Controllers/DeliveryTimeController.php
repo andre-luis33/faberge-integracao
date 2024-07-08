@@ -21,11 +21,11 @@ class DeliveryTimeController extends Controller
    }
 
    public function index() {
-      $userId = $this->session->userId;
+      $companyId = $this->session->company->id;
 
       $times = $this->deliveryTime
          ->select(['uf', 'days'])
-         ->where('user_id', $userId)
+         ->where('company_id', $companyId)
          ->get();
 
       return response()->json($times);
@@ -39,7 +39,7 @@ class DeliveryTimeController extends Controller
       ];
 
       $request->validate($validation);
-      $userId = $this->session->userId;
+      $companyId = $this->session->company->id;
 
       $requestUfs = collect($request->all());
 
@@ -55,10 +55,10 @@ class DeliveryTimeController extends Controller
          DB::beginTransaction();
 
          $this->deliveryTime
-            ->where('user_id', $userId)
+            ->where('company_id', $companyId)
             ->delete();
 
-         $requestUfs->each(function($uf) use ($userId, $ufs) {
+         $requestUfs->each(function($uf) use ($companyId, $ufs) {
 
             if(!$ufs->contains($uf['uf']))
                return;
@@ -66,7 +66,7 @@ class DeliveryTimeController extends Controller
             $this->deliveryTime->create([
                'uf'   => $uf['uf'],
                'days' => $uf['days'],
-               'user_id' => $userId
+               'company_id' => $companyId
             ]);
 
          });

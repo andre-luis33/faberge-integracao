@@ -12,6 +12,6 @@ class PartGroup extends Model
    protected $fillable = [
       'category',
       'type',
-      'user_id',
+      'company_id',
    ];
 }

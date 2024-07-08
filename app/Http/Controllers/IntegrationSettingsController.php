@@ -24,11 +24,14 @@ class IntegrationSettingsController extends Controller
    }
 
    public function index() {
-      $userId = $this->session->userId;
+      $companyId = $this->session->company->id;
       $settings = $this->integrationSettings
          ->select(['interval', 'enabled', 'linx_user', 'linx_password', 'cilia_token'])
-         ->where('user_id', $userId)
+         ->where('company_id', $companyId)
          ->first();
+
+      if(!$settings)
+         return response()->json($settings);
 
       $linxPassword = Crypt::decrypt((string) $settings->linx_password);
       $ciliaToken = Crypt::decrypt((string)   $settings->cilia_token);
@@ -60,14 +63,14 @@ class IntegrationSettingsController extends Controller
       else
          $data['linx_password'] = Crypt::encrypt($request->input('linx_password'));
 
-
-      $userId = $this->session->userId;
+      $companyId = $this->session->company->id;
+      $data['company_id'] = $companyId;
 
       try {
 
          $this->integrationSettings
-            ->where('user_id', $userId)
-            ->update($data);
+            ->where('company_id', $companyId)
+            ->updateOrCreate($data);
 
          return response(status: 204);
 

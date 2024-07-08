@@ -12,6 +12,6 @@ class DeliveryTime extends Model
    protected $fillable = [
       'uf',
       'days',
-      'user_id',
+      'company_id',
    ];
 }

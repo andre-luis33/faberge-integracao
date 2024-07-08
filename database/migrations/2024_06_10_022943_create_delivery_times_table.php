@@ -15,11 +15,11 @@ return new class extends Migration
          $table->unsignedInteger('id', true);
          $table->string('uf', 2);
          $table->unsignedTinyInteger('days')->nullable();
-         $table->unsignedInteger('user_id');
+         $table->unsignedInteger('company_id');
          $table->timestamps();
 
-         $table->unique(['uf', 'user_id']);
-         $table->foreign('user_id')->references('id')->on('users');
+         $table->unique(['uf', 'company_id']);
+         $table->foreign('company_id')->references('id')->on('companies');
       });
    }
 
