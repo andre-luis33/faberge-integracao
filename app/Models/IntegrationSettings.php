@@ -21,4 +21,8 @@ class IntegrationSettings extends Model
    protected $casts = [
       'enabled' => 'boolean'
    ];
+
+   public function existsByCompanyId(int $companyId): bool {
+      return $this->where('company_id', $companyId)->count() > 0;
+   }
 }

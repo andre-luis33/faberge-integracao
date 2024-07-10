@@ -52,25 +52,32 @@ class IntegrationSettingsController extends Controller
          'cilia_token'   => 'nullable|string|max:100',
       ]);
 
-      if(!$data['cilia_token'])
+      if(!isset($data['cilia_token']))
          unset($data['cilia_token']);
       else
          $data['cilia_token'] = Crypt::encrypt($request->input('cilia_token'));
 
 
-      if(!$data['linx_password'])
+      if(!isset($data['linx_password']))
          unset($data['linx_password']);
       else
          $data['linx_password'] = Crypt::encrypt($request->input('linx_password'));
 
       $companyId = $this->session->company->id;
-      $data['company_id'] = $companyId;
 
       try {
 
-         $this->integrationSettings
-            ->where('company_id', $companyId)
-            ->updateOrCreate($data);
+         if($this->integrationSettings->existsByCompanyId($companyId)) {
+            $this->integrationSettings
+               ->where('company_id', $companyId)
+               ->update($data);
+
+         } else {
+            $data['company_id'] = $companyId;
+
+            $this->integrationSettings
+               ->create($data);
+         }
 
          return response(status: 204);
 
