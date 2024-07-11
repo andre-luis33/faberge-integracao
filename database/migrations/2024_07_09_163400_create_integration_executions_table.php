@@ -10,15 +10,16 @@ return new class extends Migration {
     */
    public function up(): void
    {
-      Schema::create('integration_logs', function (Blueprint $table) {
+      Schema::create('integration_executions', function (Blueprint $table) {
          $table->unsignedInteger('id', true);
          $table->text('linx_payload')->nullable();
          $table->text('linx_response')->nullable();
          $table->unsignedInteger('linx_status_code')->nullable();
          $table->text('cilia_payload')->nullable();
          $table->text('cilia_response')->nullable();
-         $table->text('cilia_status_code')->nullable();
-         $table->text('app_error')->nullable();
+         $table->unsignedInteger('cilia_status_code')->nullable();
+         $table->boolean('is_internal_error');
+         $table->text('error')->nullable();
          $table->boolean('forced_execution');
          $table->unsignedInteger('company_id');
          $table->timestamps();
@@ -32,6 +33,6 @@ return new class extends Migration {
     */
    public function down(): void
    {
-      Schema::dropIfExists('integration_logs');
+      Schema::dropIfExists('integration_executions');
    }
 };

@@ -87,7 +87,8 @@ Route::prefix('/api')->group(function () {
          Route::put('/', [IntegrationSettingsController::class, 'update']);
       });
 
-      Route::prefix('/integration')->group(function() {
+      Route::prefix('/integrations/executions')->group(function() {
+         Route::get('/', [IntegrationController::class, 'index']);
          Route::post('/', [IntegrationController::class, 'store']);
       });
 

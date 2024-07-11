@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class IntegrationSettings extends Model
 {
@@ -26,17 +27,17 @@ class IntegrationSettings extends Model
       return $this->where('company_id', $companyId)->count() > 0;
    }
 
-   public function findAvailableIntegrations() {
+   public function findIntegrationsToRun() {
+      $now = date('Y-m-d H:i:s');
+
       return $this
-         ->select([
-            'i.*'
-         ])
-         ->from('integration_settings as i')
-         ->join('companies as c', 'c.id', '=', 'i.company_id')
-         ->where([
-            'c.active' => true,
-            'i.enabled' => true
-         ])
+         ->select(['company_id'])
+         ->whereRaw("
+               DATEDIFF(MINUTE,
+                  (SELECT MAX(il.created_at)
+                  FROM integration_executions AS il
+                  WHERE il.company_id = integration_settings.company_id), ?) >= integration_settings.interval
+         ", [$now])
          ->get();
    }
 }

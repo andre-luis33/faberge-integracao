@@ -1,4 +1,4 @@
-import { alerty, allFieldsHaveValue, loader } from "../helper.js"
+import { alerty, allFieldsHaveValue, dateHelper, loader, oneRowTableMessage, skeletonTable } from "../helper.js"
 import IntegrationSettingsService from "../services/IntegrationSettingsService.js"
 
 jQuery(function() {
@@ -14,6 +14,11 @@ jQuery(function() {
 
    const submitBtn = $('#btn-submit')
 
+   const executionsTable = $('#executions-table')
+   const executionsCount = $('#executions-count')
+   const btnExecutions = $('#btn-executions')
+   const btnExecuteIntegration = $('#btn-execute-integration')
+
    const allowedIntervals = [15, 30, 45, 60]
 
    intervalBtns.on('click', function() {
@@ -27,6 +32,8 @@ jQuery(function() {
          submit()
    })
 
+   btnExecutions.on('click', getLogs)
+   btnExecuteIntegration.on('click', executeIntegration)
 
    function resetIntervalBtns() {
       intervalBtns.removeAttr('data-checked').removeClass().addClass('btn btn-outline-purple')
@@ -105,7 +112,86 @@ jQuery(function() {
 
    }
 
+   async function getLogs() {
 
+      try {
+
+         skeletonTable(executionsTable, 5)
+         const logs = await IntegrationSettingsService.getLogs()
+         listLogs(logs)
+
+      } catch (error) {
+         console.error(error)
+      }
+
+   }
+
+   async function executeIntegration() {
+
+      try {
+
+         await IntegrationSettingsService.createExectuion(btnExecuteIntegration)
+         alerty.show('success', 'Ebaaaaa!', 'Integração realizada com sucesso')
+
+      } catch (error) {
+         console.error(error)
+      } finally {
+         getLogs()
+      }
+
+   }
+
+   /**
+    * @param {import('../services/IntegrationSettingsService.js').IntegrationExecution[]} logs
+    */
+   function listLogs(logs) {
+
+      executionsCount.html(logs.length)
+
+      if(logs.length < 1) {
+         oneRowTableMessage(executionsTable, 'Nenhuma execução encontrada!')
+         return
+      }
+
+      const tbody = executionsTable.find('tbody')
+      tbody.empty()
+
+
+      logs.forEach(log => {
+
+         const { cilia_status_code, created_at, error, forced_execution, linx_status_code } = log
+
+         let linxStatus = '', ciliaStatus = ''
+
+         if(linx_status_code === 200) {
+            linxStatus = `<span class="bg-success text-white py-1 px-2 rounded">Sucesso</span>`
+         } else if (linx_status_code != null) {
+            linxStatus = `<span class="bg-danger text-white py-1 px-2 rounded">Erro</span>`
+         } else {
+            linxStatus = '--'
+         }
+
+         if(cilia_status_code === 200) {
+            ciliaStatus = `<span class="bg-success text-white py-1 px-2 rounded">Sucesso</span>`
+         } else if (cilia_status_code) {
+            ciliaStatus = `<span class="bg-danger text-white py-1 px-2 rounded">Erro</span>`
+         } else {
+            ciliaStatus = '--'
+         }
+
+         tbody.append(`
+            <tr>
+               <td>${dateHelper.formatToBr(created_at)}</td>
+               <td>${forced_execution ? 'Manual' : 'Automático'}</td>
+               <td>${linxStatus}</td>
+               <td>${ciliaStatus}</td>
+               <td class="w-50">${error ?? '--'}</td>
+            </tr>
+         `)
+
+      })
+
+   }
 
    renderPage()
 })

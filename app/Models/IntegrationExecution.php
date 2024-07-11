@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class IntegrationLog extends Model
+class IntegrationExecution extends Model
 {
    use HasFactory;
 
@@ -16,9 +16,15 @@ class IntegrationLog extends Model
       'cilia_payload',
       'cilia_response',
       'cilia_status_code',
-      'app_error',
+      'is_internal_error',
+      'error',
       'forced_execution',
       'company_id'
+   ];
+
+   protected $casts = [
+      'forced_execution' => 'boolean',
+      'is_internal_error' => 'boolean',
    ];
 
 }

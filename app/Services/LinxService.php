@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use App\Dtos\LinxAuthResponseDto;
 use App\Dtos\LinxStockPartDto;
 use App\Dtos\LinxStockResponseDto;
 use Exception;
@@ -17,16 +18,16 @@ class LinxService extends BaseService {
 
    public function __construct() {
       parent::__construct();
-      $this->configureHttpClient($this->baseUrl);
+      $this->configureHttpClient($this->baseUrl, 10);
       $this->mockJsonPath = app_path('/Mocks/stock.json');
    }
 
-   public function auth(string $subscriptionKey, string $username, string $password): void {
+   public function auth(string $subscriptionKey, string $username, string $password): LinxAuthResponseDto {
 
-      if(Cache::has($this->cacheKey)) {
-         $this->accessToken = Cache::get($this->cacheKey);
-         return;
-      }
+      // if(Cache::has($this->cacheKey)) {
+      //    $this->accessToken = Cache::get($this->cacheKey);
+      //    return new LinxAuthResponseDto('cache', 200);
+      // }
 
       $response = $this->httpClient->post("{$this->baseUrl}/api-seguranca/token", [
          'headers' => [
@@ -38,14 +39,16 @@ class LinxService extends BaseService {
          ]
       ]);
 
+      $responseDto = new LinxAuthResponseDto($response->getBody(), $response->getStatusCode());
       if($response->getStatusCode() !== 200)
-         throw new Exception($response->getBody(), $response->getStatusCode());
+         return $responseDto;
 
       $body  = json_decode($response->getBody());
       $token = $body->access_token;
 
-      Cache::put($this->cacheKey, $token, $this->cacheTTL);
+      // Cache::put($this->cacheKey, $token, $this->cacheTTL);
       $this->accessToken = $token;
+      return $responseDto;
    }
 
    public function getMockStock(): LinxStockResponseDto {

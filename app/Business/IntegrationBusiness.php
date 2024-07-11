@@ -5,11 +5,13 @@ use App\Dtos\CiliaStockItemDto;
 use App\Dtos\LinxStockPartDto;
 use App\Exceptions\BusinessException;
 use App\Models\DeliveryTime;
-use App\Models\IntegrationLog;
+use App\Models\IntegrationExecution;
 use App\Models\IntegrationSettings;
 use App\Models\PartGroup;
 use App\Services\CiliaService;
 use App\Services\LinxService;
+use Carbon\Carbon;
+use DateTime;
 use Error;
 use Exception;
 use Illuminate\Support\Collection;
@@ -17,40 +19,79 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use \Illuminate\Database\Eloquent\Collection as DbCollection;
 
-class StockUpdateBusiness {
+class IntegrationBusiness {
 
    private DeliveryTime $deliveryTime;
    private PartGroup $partGroup;
    private IntegrationSettings $integrationSettings;
-   private IntegrationLog $integrationLog;
+   private IntegrationExecution $integrationExecution;
    private LinxService $linxService;
    private CiliaService $ciliaService;
 
-   public function __construct(DeliveryTime $deliveryTime, PartGroup $partGroup, IntegrationSettings $integrationSettings, IntegrationLog $integrationLog, LinxService $linxService, CiliaService $ciliaService) {
+   public function __construct(DeliveryTime $deliveryTime, PartGroup $partGroup, IntegrationSettings $integrationSettings, IntegrationExecution $integrationExecution, LinxService $linxService, CiliaService $ciliaService) {
       $this->deliveryTime = $deliveryTime;
       $this->partGroup = $partGroup;
       $this->integrationSettings = $integrationSettings;
-      $this->integrationLog = $integrationLog;
+      $this->integrationExecution = $integrationExecution;
       $this->linxService = $linxService;
       $this->ciliaService = $ciliaService;
    }
 
-   public function updateStock(int $companyId, bool $forcedExecution): void {
+   /**
+    * Searchs for all integrations in the past 24 hours and treats the error. When it's an app error, it provides a generic message for security reasons
+    * @return
+    */
+   public function findLastExecutions(int $companyId) {
+      $date = date('Y-m-d H:i:s', strtotime('-24 hours'));
+      $integrations = $this->integrationExecution
+         ->select([
+            'linx_status_code',
+            'cilia_status_code',
+            'error',
+            'forced_execution',
+            'is_internal_error',
+            'created_at',
+         ])
+         ->where([
+            'company_id' => $companyId,
+            ['created_at', '>=', $date]
+         ])
+         ->orderByDesc('created_at')
+         ->get();
+
+      $integrations->each(function ($integration) {
+         if($integration->is_internal_error)
+            $integration->error = 'Erro interno no sistema. Consulte o suporte para obter mais informações sobre o problema.';
+      });
+
+      return $integrations;
+   }
+
+   public function findIntegrationsToRun() {
+      return $this->integrationSettings->findIntegrationsToRun();
+   }
+
+   /**
+    * Executes the stock update integration
+    * @return void
+    */
+   public function executeIntegration(int $companyId, bool $forcedExecution): void {
 
       $csvPath = '';
-      $integrationLog = [];
-      $integrationLog['company_id'] = $companyId;
-      $integrationLog['forced_execution'] = $forcedExecution;
+      $integrationExecution = [];
+      $integrationExecution['company_id'] = $companyId;
+      $integrationExecution['forced_execution'] = $forcedExecution;
+      $integrationExecution['is_internal_error'] = false;
 
       try {
 
          $integrationSettings = $this->integrationSettings->where('company_id', $companyId)->first();
 
          if(!$integrationSettings->linx_user || !$integrationSettings->linx_password)
-            throw new BusinessException('Não é possível realizar a integração sem um usuário e senha para a api da Linx');
+            throw new BusinessException('Não é possível realizar a integração sem um usuário e senha para a api da Linx', 400);
 
          if(!$integrationSettings->cilia_token)
-            throw new BusinessException('Não é possível realizar a integração sem um token de autenticação para a api da Cilia');
+            throw new BusinessException('Não é possível realizar a integração sem um token de autenticação para a api da Cilia', 400);
 
 
          $deliveryTimes       = $this->deliveryTime->findStatesWithDeliveryByCompanyId($companyId);
@@ -59,15 +100,22 @@ class StockUpdateBusiness {
          $linxUser     = $integrationSettings->linx_user;
          $linxPassword = Crypt::decrypt($integrationSettings->linx_password);
 
-         $this->linxService->auth(env('LINX_SUBSCRIPTION_KEY'), $linxUser, $linxPassword);
+         $linxAuthResponse = $this->linxService->auth(env('LINX_SUBSCRIPTION_KEY'), $linxUser, $linxPassword);
+
+         $integrationExecution['linx_status_code'] = $linxAuthResponse->statusCode;
+         $integrationExecution['linx_response'] = $linxAuthResponse->json;
+
+         if($linxAuthResponse->statusCode != 200)
+            throw new BusinessException("Erro ao se autenticar na linx! Status HTTP: {$linxAuthResponse->statusCode} | Resposta API: {$linxAuthResponse->json}", $linxAuthResponse->statusCode);
 
          $linxResponse = $this->linxService->getMockStock();
 
-         if($linxResponse->statusCode !== 200)
-            throw new BusinessException("Erro ao buscar dados de estoque na linx! Status HTTP: {$linxResponse->statusCode}", $linxResponse->statusCode);
+         $integrationExecution['linx_status_code'] = $linxResponse->statusCode;
+         $integrationExecution['linx_response'] = $linxResponse->json;
 
-         $integrationLog['linx_status_code'] = $linxResponse->statusCode;
-         $integrationLog['linx_response'] = $linxResponse->json;
+         if($linxResponse->statusCode !== 200)
+            throw new BusinessException("Erro ao buscar dados de estoque na linx! Status HTTP: {$linxResponse->statusCode} | Resposta API: {$linxResponse->json}", $linxResponse->statusCode);
+
 
          $parts = $linxResponse->stockParts;
          $stockParts = $this->mapStockPartsToEachDeliveryState($parts, $deliveryTimes, $partGroups);
@@ -78,29 +126,30 @@ class StockUpdateBusiness {
          $this->ciliaService->setAuthToken(Crypt::decrypt($integrationSettings->cilia_token));
          $ciliaResponse = $this->ciliaService->sendCsv($csvPath, true);
 
-         $integrationLog['cilia_payload']     = $csvContent;
-         $integrationLog['cilia_status_code'] = $ciliaResponse->statusCode;
-         $integrationLog['cilia_response']    = $ciliaResponse->json;
+         $integrationExecution['cilia_payload']     = $csvContent;
+         $integrationExecution['cilia_status_code'] = $ciliaResponse->statusCode;
+         $integrationExecution['cilia_response']    = $ciliaResponse->json;
 
          if($ciliaResponse->statusCode !== 204)
-            throw new BusinessException("Erro ao enviar CSV para cilia! Status HTTP: {$ciliaResponse->statusCode}", $ciliaResponse->statusCode);
+            throw new BusinessException("Erro ao enviar CSV para cilia! Status HTTP: {$ciliaResponse->statusCode} | Resposta API: {$ciliaResponse->json}", $ciliaResponse->statusCode);
 
       } catch (BusinessException $e) {
 
-         $integrationLog['app_error'] = $e->getMessage();
+         $integrationExecution['error'] = $e->getMessage();
          Log::error($e->getMessage());
          throw new BusinessException($e->getMessage(), $e->getCode());
 
       // } catch (Exception | Error $e) {
       } catch (Exception $e) {
 
-         $integrationLog['app_error'] = $e->getMessage();
+         $integrationExecution['is_internal_error'] = true;
+         $integrationExecution['error'] = $e->getMessage();
          Log::error($e->getMessage());
          throw new Exception($e->getMessage());
 
       } finally {
          $this->deleteCsv($csvPath);
-         $this->integrationLog->create($integrationLog);
+         $this->integrationExecution->create($integrationExecution);
       }
 
    }

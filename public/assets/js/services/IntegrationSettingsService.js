@@ -9,8 +9,18 @@ import { API_URL } from "../config.js"
  * @property {number} interval
  */
 
+/**
+ * @typedef {object} IntegrationExecution
+ * @property {number|null} linx_status_code
+ * @property {number|null} cilia_status_code
+ * @property {string|null} error
+ * @property {boolean} forced_execution
+ * @property {string} created_at
+ */
+
 
 const URL = `${API_URL}/integration-settings`
+const URL_EXECUTIONS = `${API_URL}/integrations/executions`
 
 /**
  * @returns {Promise<IntegrationSettings>}
@@ -20,6 +30,30 @@ export async function get() {
    const config = {
       method: 'GET',
       url: `${URL}`,
+   }
+
+   return $.ajax(config)
+}
+
+/**
+ * @returns {Promise<IntegrationExecution[]>}
+ */
+export async function getLogs() {
+
+   const config = {
+      method: 'GET',
+      url: `${URL_EXECUTIONS}`,
+   }
+
+   return $.ajax(config)
+}
+
+export async function createExectuion(btn) {
+
+   const config = {
+      method: 'POST',
+      url: `${URL_EXECUTIONS}`,
+      waitButton: btn
    }
 
    return $.ajax(config)
@@ -38,5 +72,5 @@ export async function update(data, btn) {
 }
 
 export default {
-   get, update
+   get, update, getLogs, createExectuion
 }

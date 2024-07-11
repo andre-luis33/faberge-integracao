@@ -10,8 +10,6 @@
       60
    ];
 
-   $selectedInterval = 45;
-
 @endphp
 
 @section('content')
@@ -19,9 +17,16 @@
    <x-main-card>
 
       <div class="wrapper">
-         <h2 class="side-title">
-            Status
-         </h2>
+         <div class="d-flex justify-content-between align-items-center">
+            <h2 class="side-title">
+               Status
+            </h2>
+
+            <button id="btn-executions" class="btn btn-success mr-3" data-toggle="modal" data-target="#integrations-modal">
+               <i class="fas fa-stream"></i>
+               Últimas Execuções
+            </button>
+         </div>
 
          <div class="pl-4 my-3">
             <p class="text-purple-primary mb-1">
@@ -77,12 +82,12 @@
                         <input class="form-control" type="text" id="linx-password" placeholder="Senha" data-required>
                      </div>
                   </div>
-                  <div class="col-md-3">
+                  {{-- <div class="col-md-3">
                      <button class="btn btn-purple">
                         <i class="fas fa-wrench"></i>
                         Testar Integração
                      </button>
-                  </div>
+                  </div> --}}
                </div>
             </div>
          </div>
@@ -106,12 +111,12 @@
                         <input class="form-control" type="text" id="cilia-token" placeholder="Token de Acesso" data-required>
                      </div>
                   </div>
-                  <div class="col-md-3">
+                  {{-- <div class="col-md-3">
                      <button class="btn btn-purple">
                         <i class="fas fa-wrench"></i>
                         Testar Integração
                      </button>
-                  </div>
+                  </div> --}}
                </div>
             </div>
          </div>
@@ -130,6 +135,39 @@
       </div>
    </x-main-card>
 
+   <x-modal id="integrations-modal" title="Últimas Execuções" size="xl">
+      <x-slot name="body">
+         <div class="alert alert-info text-center font-italic">
+            Você está visualizando dados sobre as execuções das últimas 24 horas.
+         </div>
+
+         <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5>Total de Execuções: <span id="executions-count"></span></h5>
+
+            <button class="btn btn-purple" id="btn-execute-integration">
+               <i class="fas fa-wrench"></i>
+               Executar Agora
+            </button>
+         </div>
+
+         <table id="executions-table" class="table table-hover">
+            <thead>
+               <tr>
+                  <td>Data/Hora</td>
+                  <td>Modo Execução</td>
+                  <td>Status Linx</td>
+                  <td>Status Cilia</td>
+                  <td>Erro</td>
+               </tr>
+            </thead>
+            <tbody>
+            </tbody>
+         </table>
+      </x-slot>
+      <x-slot name="footer">
+         <button class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </x-slot>
+   </x-modal>
 @endsection
 
 @section('scripts')

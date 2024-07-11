@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Business\StockUpdateBusiness;
+use App\Business\IntegrationBusiness;
 use App\Exceptions\BusinessException;
 use Illuminate\Http\Request;
 
 class IntegrationController extends Controller
 {
 
-   private StockUpdateBusiness $stockUpdateBusiness;
+   private IntegrationBusiness $integrationBusiness;
 
-   public function __construct(StockUpdateBusiness $stockUpdateBusiness) {
-      $this->stockUpdateBusiness = $stockUpdateBusiness;
+   public function __construct(IntegrationBusiness $integrationBusiness) {
+      $this->integrationBusiness = $integrationBusiness;
       $this->setSession();
+   }
+
+   public function index() {
+      $companyId = $this->session->company->id;
+      $integrations = $this->integrationBusiness->findLastExecutions($companyId);
+      return response()->json($integrations);
    }
 
    public function store() {
@@ -22,7 +28,7 @@ class IntegrationController extends Controller
 
       try {
 
-         $this->stockUpdateBusiness->updateStock($companyId, true);
+         $this->integrationBusiness->executeIntegration($companyId, true);
          return response()->json(['message' => 'Integração executada com sucesso'], 200);
 
       } catch (BusinessException $e) {
