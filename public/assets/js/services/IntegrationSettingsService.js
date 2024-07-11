@@ -4,6 +4,8 @@ import { API_URL } from "../config.js"
  * @typedef {object} IntegrationSettings
  * @property {string} linx_user
  * @property {string} linx_password
+ * @property {string} linx_auth_key
+ * @property {string} linx_stock_key
  * @property {string} cilia_token
  * @property {boolean} enabled
  * @property {number} interval

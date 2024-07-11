@@ -70,24 +70,30 @@
 
             <div class="form-group">
                <div class="form-row">
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                      <div class="input-wrapper">
                         <i class="fas fa-user"></i>
                         <input class="form-control" type="text" id="linx-user" placeholder="Usuário" data-required>
                      </div>
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                      <div class="input-wrapper">
                         <i class="fas fa-lock"></i>
                         <input class="form-control" type="text" id="linx-password" placeholder="Senha" data-required>
                      </div>
                   </div>
-                  {{-- <div class="col-md-3">
-                     <button class="btn btn-purple">
-                        <i class="fas fa-wrench"></i>
-                        Testar Integração
-                     </button>
-                  </div> --}}
+                  <div class="col-md-3">
+                     <div class="input-wrapper">
+                        <i class="fas fa-key"></i>
+                        <input class="form-control" type="text" id="linx-auth-key" placeholder="Subscription Key (Login)" data-required>
+                     </div>
+                  </div>
+                  <div class="col-md-3">
+                     <div class="input-wrapper">
+                        <i class="fas fa-key"></i>
+                        <input class="form-control" type="text" id="linx-stock-key" placeholder="Subscription Key (Estoque)" data-required>
+                     </div>
+                  </div>
                </div>
             </div>
          </div>
@@ -105,7 +111,7 @@
 
             <div class="form-group">
                <div class="form-row">
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                      <div class="input-wrapper">
                         <i class="fas fa-key"></i>
                         <input class="form-control" type="text" id="cilia-token" placeholder="Token de Acesso" data-required>

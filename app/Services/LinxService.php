@@ -5,6 +5,7 @@ use App\Dtos\LinxAuthResponseDto;
 use App\Dtos\LinxStockPartDto;
 use App\Dtos\LinxStockResponseDto;
 use Exception;
+use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Support\Facades\Cache;
 
 class LinxService extends BaseService {
@@ -24,31 +25,90 @@ class LinxService extends BaseService {
 
    public function auth(string $subscriptionKey, string $username, string $password): LinxAuthResponseDto {
 
-      // if(Cache::has($this->cacheKey)) {
-      //    $this->accessToken = Cache::get($this->cacheKey);
-      //    return new LinxAuthResponseDto('cache', 200);
-      // }
+      $i = 0;
+      $retryCount = 3;
+      $secondsRetryDelay = 1;
 
-      $response = $this->httpClient->post("{$this->baseUrl}/api-seguranca/token", [
+      while($i < $retryCount) {
+
+         try {
+
+            $response = $this->httpClient->post("{$this->baseUrl}/api-seguranca/token", [
+               'headers' => [
+                  'Ocp-Apim-Subscription-Key' => $subscriptionKey
+               ],
+               'form_params' => [
+                  'username' => $username,
+                  'password' => $password
+               ]
+            ]);
+
+            break;
+
+         } catch (ConnectException $e) {
+
+            if ($i < $retryCount - 1) {
+               usleep($secondsRetryDelay);
+               $i++;
+               continue;
+            }
+
+            throw $e;
+         }
+
+      }
+
+      $json = json_decode($response->getBody());
+      $this->accessToken = $json->access_token;
+
+      return new LinxAuthResponseDto($response->getBody(), $response->getStatusCode());
+   }
+
+   public function getStock(string $subscriptionKey): LinxStockResponseDto {
+
+      $response = $this->httpClient->post("{$this->baseUrl}/pecas-balcao/ConsultaPecaGerencial", [
          'headers' => [
-            'Ocp-Apim-Subscription-Key' => $subscriptionKey
+            'Ocp-Apim-Subscription-Key' => $subscriptionKey,
+            'Authorization' => "Bearer {$this->accessToken}",
          ],
-         'form_params' => [
-            'username' => $username,
-            'password' => $password
+         'json' => [
+            'ConfiguracaoBase' => [
+               'Empresa' => 1,
+               'Revenda' => 1,
+               'Usuario' => 0,
+               'CodigoOrigem' => 0,
+               'IdentificadorOrigem' => ''
+            ],
+            'TextoPesquisa' => '',
+            'GruposPecas' => '',
+            'Marcas' => '',
+            'TipoTransacao' => 'P21',
+            'RetiraPrecoMarkup' => false,
+            'RecallFCA' => false,
+            'Movimentados' => true,
+            'Consultados' => true,
+            'TipoPesquisa' => 'I',
+            'CodigoItemParcial' => '',
+            'SomenteDisponiveis' => true
          ]
       ]);
 
-      $responseDto = new LinxAuthResponseDto($response->getBody(), $response->getStatusCode());
-      if($response->getStatusCode() !== 200)
-         return $responseDto;
+      $body = $response->getBody();
+      $statusCode = $response->getStatusCode();
 
-      $body  = json_decode($response->getBody());
-      $token = $body->access_token;
+      if($response->getStatusCode() !== 200) {
+         return new LinxStockResponseDto($body, $statusCode, null);
+      }
 
-      // Cache::put($this->cacheKey, $token, $this->cacheTTL);
-      $this->accessToken = $token;
-      return $responseDto;
+      $stockArray = json_decode($body, true);
+      $stockCollection = collect();
+
+      foreach($stockArray as $data) {
+         $part = LinxStockPartDto::fromArray($data);
+         $stockCollection->push($part);
+      }
+
+      return new LinxStockResponseDto($body, $statusCode, $stockCollection);
    }
 
    public function getMockStock(): LinxStockResponseDto {

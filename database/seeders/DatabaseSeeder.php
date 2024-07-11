@@ -42,7 +42,9 @@ class DatabaseSeeder extends Seeder
          'interval' => 30,
          'company_id' => 1,
          'linx_user' => 'FabergeLinx',
-         'linx_password' => Crypt::encrypt('senha123@@'),
+         'linx_password' => Crypt::encrypt(fake()->password()),
+         'linx_auth_key' => Crypt::encrypt(Str::random(40)),
+         'linx_stock_key' => Crypt::encrypt(Str::random(40)),
          'cilia_token' => Crypt::encrypt(Str::random(40))
       ]);
 

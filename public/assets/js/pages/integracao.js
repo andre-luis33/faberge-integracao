@@ -5,11 +5,15 @@ jQuery(function() {
 
    let LINX_PASSWORD_API_VALUE
    let CILIA_TOKEN_API_VALUE
+   let LINX_AUTH_KEY_API_VALUE
+   let LINX_STOCK_KEY_API_VALUE
 
    const statusBtn = $('#status-btn')
    const intervalBtns = $('button[data-interval]')
    const linxUser = $('#linx-user')
    const linxPassword = $('#linx-password')
+   const linxAuthKey  = $('#linx-auth-key')
+   const linxStockKey = $('#linx-stock-key')
    const ciliaToken = $('#cilia-token')
 
    const submitBtn = $('#btn-submit')
@@ -61,12 +65,16 @@ jQuery(function() {
       // prevents sending **** to the api when the user don't change their value
       const password = linxPassword.val() === LINX_PASSWORD_API_VALUE ? null : linxPassword.val()
       const token    = ciliaToken.val() === CILIA_TOKEN_API_VALUE ? null : ciliaToken.val()
+      const authKey  = linxAuthKey.val() === LINX_AUTH_KEY_API_VALUE ? null : linxAuthKey.val()
+      const stockKey = linxStockKey.val() === LINX_STOCK_KEY_API_VALUE ? null : linxStockKey.val()
 
       const payload = {
          interval,
          enabled,
          linx_user: linxUser.val(),
          linx_password: password,
+         linx_auth_key: authKey,
+         linx_stock_key: stockKey,
          cilia_token: token
       }
 
@@ -89,7 +97,7 @@ jQuery(function() {
          loader.show()
 
          const settings = await IntegrationSettingsService.get()
-         const { enabled, interval, linx_password, linx_user, cilia_token } = settings
+         const { enabled, interval, linx_password, linx_user, cilia_token, linx_auth_key, linx_stock_key } = settings
 
          resetIntervalBtns()
 
@@ -99,10 +107,14 @@ jQuery(function() {
          statusBtn.prop('checked', enabled)
          linxUser.val(linx_user)
          linxPassword.val(linx_password)
+         linxAuthKey.val(linx_auth_key)
+         linxStockKey.val(linx_stock_key)
          ciliaToken.val(cilia_token)
 
          LINX_PASSWORD_API_VALUE = linx_password
          CILIA_TOKEN_API_VALUE = cilia_token
+         LINX_AUTH_KEY_API_VALUE = linx_auth_key
+         LINX_STOCK_KEY_API_VALUE = linx_stock_key
 
       } catch {
 

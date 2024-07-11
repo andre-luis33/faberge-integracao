@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use DateTime;
 use Error;
 use Exception;
+use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
@@ -87,11 +88,18 @@ class IntegrationBusiness {
 
          $integrationSettings = $this->integrationSettings->where('company_id', $companyId)->first();
 
-         if(!$integrationSettings->linx_user || !$integrationSettings->linx_password)
-            throw new BusinessException('Não é possível realizar a integração sem um usuário e senha para a api da Linx', 400);
+         $allLinxFieldsHaveValue =
+            $integrationSettings->linx_user &&
+            $integrationSettings->linx_password &&
+            $integrationSettings->linx_auth_key &&
+            $integrationSettings->linx_stock_key
+         ;
+
+         if(!$allLinxFieldsHaveValue)
+            throw new BusinessException('Não é possível realizar a integração com a Linx sem um usuário, senha e subscription key', 400);
 
          if(!$integrationSettings->cilia_token)
-            throw new BusinessException('Não é possível realizar a integração sem um token de autenticação para a api da Cilia', 400);
+            throw new BusinessException('Não é possível realizar a integração com a Cilia sem um token de autenticação', 400);
 
 
          $deliveryTimes       = $this->deliveryTime->findStatesWithDeliveryByCompanyId($companyId);
@@ -99,8 +107,12 @@ class IntegrationBusiness {
 
          $linxUser     = $integrationSettings->linx_user;
          $linxPassword = Crypt::decrypt($integrationSettings->linx_password);
+         $linxAuthKey  = Crypt::decrypt($integrationSettings->linx_auth_key);
+         $linxStockKey = Crypt::decrypt($integrationSettings->linx_stock_key);
 
-         $linxAuthResponse = $this->linxService->auth(env('LINX_SUBSCRIPTION_KEY'), $linxUser, $linxPassword);
+         error_log($linxAuthKey);
+
+         $linxAuthResponse = $this->linxService->auth($linxAuthKey, $linxUser, $linxPassword);
 
          $integrationExecution['linx_status_code'] = $linxAuthResponse->statusCode;
          $integrationExecution['linx_response'] = $linxAuthResponse->json;
@@ -108,7 +120,7 @@ class IntegrationBusiness {
          if($linxAuthResponse->statusCode != 200)
             throw new BusinessException("Erro ao se autenticar na linx! Status HTTP: {$linxAuthResponse->statusCode} | Resposta API: {$linxAuthResponse->json}", $linxAuthResponse->statusCode);
 
-         $linxResponse = $this->linxService->getMockStock();
+         $linxResponse = $this->linxService->getStock($linxStockKey);
 
          $integrationExecution['linx_status_code'] = $linxResponse->statusCode;
          $integrationExecution['linx_response'] = $linxResponse->json;
@@ -138,6 +150,12 @@ class IntegrationBusiness {
          $integrationExecution['error'] = $e->getMessage();
          Log::error($e->getMessage());
          throw new BusinessException($e->getMessage(), $e->getCode());
+
+      } catch (ConnectException $e) {
+
+         $integrationExecution['error'] = 'Timeout ao se comunicar com a api: '.$e->getMessage();
+         Log::error($e->getMessage());
+         throw new BusinessException($e->getMessage(), 503);
 
       // } catch (Exception | Error $e) {
       } catch (Exception $e) {

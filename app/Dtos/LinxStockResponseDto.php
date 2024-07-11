@@ -12,11 +12,11 @@ class LinxStockResponseDto {
    public int    $statusCode;
 
    /**
-    * @var Collection<LinxStockPartDto>
+    * @var Collection<LinxStockPartDto>|null
     */
-   public Collection $stockParts;
+   public Collection|null $stockParts;
 
-   public function __construct(string $json, int $statusCode, Collection $stockParts) {
+   public function __construct(string $json, int $statusCode, Collection|null $stockParts) {
       $this->json = $json;
       $this->statusCode = $statusCode;
       $this->stockParts = $stockParts;
