@@ -14,4 +14,14 @@ class DeliveryTime extends Model
       'days',
       'company_id',
    ];
+
+   function findStatesWithDeliveryByCompanyId(int $companyId) {
+      return $this
+         ->select(['uf', 'days'])
+         ->where([
+            'company_id' => $companyId,
+            ['days', '!=', null]
+         ])
+         ->get();
+   }
 }

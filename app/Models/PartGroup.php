@@ -14,4 +14,11 @@ class PartGroup extends Model
       'type',
       'company_id',
    ];
+
+   function findAllByCompanyId(int $companyId) {
+      return $this
+         ->select(['category', 'type'])
+         ->where('', $companyId)
+         ->get();
+   }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DeliveryTimeController;
+use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\IntegrationSettingsController;
 use App\Http\Controllers\PartGroupController;
 use App\Http\Controllers\SessionController;
@@ -84,6 +85,10 @@ Route::prefix('/api')->group(function () {
       Route::prefix('/integration-settings')->group(function() {
          Route::get('/', [IntegrationSettingsController::class, 'index']);
          Route::put('/', [IntegrationSettingsController::class, 'update']);
+      });
+
+      Route::prefix('/integration')->group(function() {
+         Route::post('/', [IntegrationController::class, 'store']);
       });
 
    });
