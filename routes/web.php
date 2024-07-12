@@ -60,6 +60,8 @@ Route::prefix('/api')->group(function () {
 
    Route::middleware('auth')->group(function() {
 
+      Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
+
       Route::prefix('/session')->group(function() {
          Route::get('/', [SessionController::class, 'index']);
          Route::put('/sidebar', [SessionController::class, 'sidebar']);

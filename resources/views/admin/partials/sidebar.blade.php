@@ -51,7 +51,7 @@
          </li>
       </ul>
 
-      <a href="" class="logout-link">
+      <a href="#" class="logout-link" id="btn-logout">
          <i class="fas fa-sign-out-alt"></i>
          <span>Sair</span>
       </a>

@@ -22,6 +22,16 @@ export async function updateSidebarStatus(closed) {
    return $.ajax(config)
 }
 
+export async function logout() {
+
+   const config = {
+      method: 'POST',
+      url: `${API_URL}/logout`,
+   }
+
+   return $.ajax(config)
+}
+
 export default {
-   updateSidebarStatus, updateCurrentCompany
+   updateSidebarStatus, updateCurrentCompany, logout
 }
