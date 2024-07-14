@@ -171,38 +171,49 @@ jQuery(function() {
 
       logs.forEach(log => {
 
-         const { cilia_status_code, created_at, error, forced_execution, linx_status_code } = log
+         const { cilia_status_code, created_at, error, forced_execution, linx_status_code, has_cilia_payload, id, duration } = log
 
-         let linxStatus = '', ciliaStatus = ''
+         let linxStatus = '--', ciliaStatus = '--', csvBtn = '--'
 
          if(linx_status_code === 200) {
             linxStatus = `<span class="bg-success text-white py-1 px-2 rounded">Sucesso</span>`
          } else if (linx_status_code != null) {
             linxStatus = `<span class="bg-danger text-white py-1 px-2 rounded">Erro</span>`
-         } else {
-            linxStatus = '--'
          }
 
          if(cilia_status_code === 200) {
             ciliaStatus = `<span class="bg-success text-white py-1 px-2 rounded">Sucesso</span>`
          } else if (cilia_status_code) {
             ciliaStatus = `<span class="bg-danger text-white py-1 px-2 rounded">Erro</span>`
-         } else {
-            ciliaStatus = '--'
+         }
+
+
+         const seconds = duration.split(':').pop()
+         const durationLabel = seconds == '00' ? 'Menos de 1s' : `${seconds}s`
+
+         if(has_cilia_payload) {
+            csvBtn = `
+               <a href="/admin/integrations/executions/${id}/csv" class="btn btn-sm btn-success" data-toggle="tooltip" data-placement="left" title="Baixar CSV enviado para Cilia">
+                  <i class="fas fa-file-csv"></i>
+               </a>
+            `
          }
 
          tbody.append(`
             <tr>
                <td>${dateHelper.formatToBr(created_at)}</td>
+               <td>${durationLabel}</td>
                <td>${forced_execution ? 'Manual' : 'Automático'}</td>
                <td>${linxStatus}</td>
                <td>${ciliaStatus}</td>
                <td class="w-50">${error ?? '--'}</td>
+               <td>${csvBtn}</td>
             </tr>
          `)
 
       })
 
+      $('[data-toggle="tooltip"]').tooltip()
    }
 
    renderPage()

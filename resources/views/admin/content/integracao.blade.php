@@ -117,12 +117,6 @@
                         <input class="form-control" type="text" id="cilia-token" placeholder="Token de Acesso" data-required>
                      </div>
                   </div>
-                  {{-- <div class="col-md-3">
-                     <button class="btn btn-purple">
-                        <i class="fas fa-wrench"></i>
-                        Testar Integração
-                     </button>
-                  </div> --}}
                </div>
             </div>
          </div>
@@ -160,10 +154,12 @@
             <thead>
                <tr>
                   <td>Data/Hora</td>
+                  <td>Duração</td>
                   <td>Modo Execução</td>
                   <td>Status Linx</td>
                   <td>Status Cilia</td>
                   <td>Erro</td>
+                  <td>CSV Cilia</td>
                </tr>
             </thead>
             <tbody>

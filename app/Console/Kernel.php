@@ -16,8 +16,7 @@ class Kernel extends ConsoleKernel
       $schedule->job(new StockUpdate)
          ->everyMinute()
          ->weekdays()
-         ->between('7:00', '22:00')
-         ->withoutOverlapping();
+         ->between('7:00', '22:00');
    }
 
    /**

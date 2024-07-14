@@ -19,6 +19,8 @@ class IntegrationExecution extends Model
       'is_internal_error',
       'error',
       'forced_execution',
+      'start_time',
+      'end_time',
       'company_id'
    ];
 

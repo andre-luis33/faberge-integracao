@@ -21,6 +21,7 @@ jQuery(function() {
       window.location.reload()
    })
 
+   // Changing company
 
    const changeCompanyForm = $('#change-company-form')
    const changeCompanyBtn = $('#change-company-btn-submit')
@@ -43,6 +44,16 @@ jQuery(function() {
          console.error(error)
       }
 
+   })
+
+   // Logout
+
+   const btnLogout = $('#btn-logout')
+   btnLogout.on('click', async e => {
+      e.preventDefault()
+
+      await SessionService.logout()
+      window.location.href = '/login'
    })
 
    $('[data-toggle="tooltip"]').tooltip()

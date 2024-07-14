@@ -13,10 +13,13 @@ import { API_URL } from "../config.js"
 
 /**
  * @typedef {object} IntegrationExecution
+ * @property {number} id
  * @property {number|null} linx_status_code
  * @property {number|null} cilia_status_code
  * @property {string|null} error
  * @property {boolean} forced_execution
+ * @property {boolean} has_cilia_payload
+ * @property {string} duration
  * @property {string} created_at
  */
 

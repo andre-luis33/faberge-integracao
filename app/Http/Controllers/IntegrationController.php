@@ -22,6 +22,25 @@ class IntegrationController extends Controller
       return response()->json($integrations);
    }
 
+   public function downloadCsv(int $executionId) {
+      $companyId = $this->session->company->id;
+
+      try {
+
+         $csv = $this->integrationBusiness->getCiliaCsvByExecutionIdAndCompanyId($executionId, $companyId);
+         return response($csv)
+            ->header('Content-Type', 'text/csv')
+            ->header('Content-Disposition', 'attachment; filename="estoque-cilia.csv"')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
+
+      } catch (BusinessException $e) {
+         abort(400, 'Execução não encontrada');
+      } catch (\Exception $e) {
+         abort(500, 'Erro interno no servidor');
+      }
+   }
+
    public function store() {
 
       $companyId = $this->session->company->id;

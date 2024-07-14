@@ -28,6 +28,8 @@ class StockUpdate implements ShouldQueue
     */
    public function handle(IntegrationBusiness $integrationBusiness): void
    {
+      file_put_contents('teste.txt', 'nada');
+      Log::channel('integration')->info('Integration job started #####');
       $integrations = $integrationBusiness->findIntegrationsToRun();
 
       if($integrations->count() < 1) {

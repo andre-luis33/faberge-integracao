@@ -108,7 +108,7 @@ jQuery(function() {
          const partGroups = await PartGroupService.get()
 
          if(partGroups.length < 1) {
-            alerty.show('warning', 'Atenção!', 'Você não possui nenhum grupo de peças cadastrado. Dessa forma, a integração não irá funcionar corretamente.', 0)
+            alerty.show('warning', 'Atenção!', 'Você não possui nenhum grupo de peças cadastrado. Dessa forma, a integração ira cadastrar todas as peças com o tipo "Outras Fontes"', 0)
             return
          }
 

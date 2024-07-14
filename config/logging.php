@@ -107,7 +107,7 @@ return [
       ],
 
       'integration' => [
-         'driver' => 'daily',
+         'driver' => 'single',
          'path' => storage_path('logs/integration.log'),
          'level' => env('LOG_LEVEL', 'debug'),
          'days' => 20,

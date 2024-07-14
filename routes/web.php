@@ -51,6 +51,8 @@ Route::prefix('/admin')->middleware('auth')->group(function () {
    Route::get('/integracao', function () {
       return view('admin.content.integracao');
    })->name('admin.integracao');
+
+   Route::get('/integrations/executions/{id}/csv', [IntegrationController::class, 'downloadCsv'])->name('admin.integracao.csv-download');
 });
 
 

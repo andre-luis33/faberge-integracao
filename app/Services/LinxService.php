@@ -58,10 +58,16 @@ class LinxService extends BaseService {
 
       }
 
-      $json = json_decode($response->getBody());
+      $statusCode = $response->getStatusCode();
+      $body = $response->getBody();
+
+      if($statusCode !== 200)
+         return new LinxAuthResponseDto($body, $statusCode);
+
+      $json = json_decode($body);
       $this->accessToken = $json->access_token;
 
-      return new LinxAuthResponseDto($response->getBody(), $response->getStatusCode());
+      return new LinxAuthResponseDto($body, $statusCode);
    }
 
    public function getStock(string $subscriptionKey): LinxStockResponseDto {

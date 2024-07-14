@@ -21,6 +21,8 @@ return new class extends Migration {
          $table->boolean('is_internal_error');
          $table->text('error')->nullable();
          $table->boolean('forced_execution');
+         $table->datetime('start_time');
+         $table->datetime('end_time');
          $table->unsignedInteger('company_id');
          $table->timestamps();
 

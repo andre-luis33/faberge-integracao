@@ -12,11 +12,13 @@ use App\Services\CiliaService;
 use App\Services\LinxService;
 use Carbon\Carbon;
 use DateTime;
+use DateTimeZone;
 use Error;
 use Exception;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use \Illuminate\Database\Eloquent\Collection as DbCollection;
 
@@ -46,12 +48,21 @@ class IntegrationBusiness {
       $date = date('Y-m-d H:i:s', strtotime('-24 hours'));
       $integrations = $this->integrationExecution
          ->select([
+            'id',
             'linx_status_code',
             'cilia_status_code',
             'error',
             'forced_execution',
             'is_internal_error',
             'created_at',
+            'start_time',
+            'end_time',
+            DB::raw('
+              CASE
+                 WHEN cilia_payload IS NOT NULL THEN 1
+                 ELSE 0
+              END as has_cilia_payload
+            ')
          ])
          ->where([
             'company_id' => $companyId,
@@ -62,14 +73,42 @@ class IntegrationBusiness {
 
       $integrations->each(function ($integration) {
          if($integration->is_internal_error)
-            $integration->error = 'Erro interno no sistema. Consulte o suporte para obter mais informações sobre o problema.';
+            $integration->error = 'Erro interno no sistema. Consulte o suporte para obter mais informações sobre o problema';
+
+         $integration->has_cilia_payload = (bool) $integration->has_cilia_payload;
+
+         $startTime = new DateTime($integration->start_time);
+         $endTime = new DateTime($integration->end_time);
+         unset($integration->start_time);
+         unset($integration->end_time);
+
+         $integration->duration = $endTime->diff($startTime)->format('%H:%M:%S');
       });
+
 
       return $integrations;
    }
 
    public function findIntegrationsToRun() {
       return $this->integrationSettings->findIntegrationsToRun();
+   }
+
+   public function getCiliaCsvByExecutionIdAndCompanyId(int $executionId, int $companyId): string {
+
+      $ciliaPayload = $this->integrationExecution
+         ->select('cilia_payload')
+         ->from('integration_executions')
+         ->where([
+            'company_id' => $companyId,
+            'id' => $executionId
+         ])
+         ->first();
+
+      if(!$ciliaPayload) {
+         throw new BusinessException('Execução não encontrada');
+      }
+
+      return $ciliaPayload->cilia_payload;
    }
 
    /**
@@ -79,14 +118,19 @@ class IntegrationBusiness {
    public function executeIntegration(int $companyId, bool $forcedExecution): void {
 
       $csvPath = '';
+      $startTime = new DateTime();
+
       $integrationExecution = [];
       $integrationExecution['company_id'] = $companyId;
       $integrationExecution['forced_execution'] = $forcedExecution;
       $integrationExecution['is_internal_error'] = false;
+      $integrationExecution['start_time'] = $startTime;
 
       try {
 
          $integrationSettings = $this->integrationSettings->where('company_id', $companyId)->first();
+         if(!$integrationSettings)
+            throw new BusinessException('Não é possível realizar a integração sem configurar seus parâmetros', 400);
 
          $allLinxFieldsHaveValue =
             $integrationSettings->linx_user &&
@@ -101,16 +145,16 @@ class IntegrationBusiness {
          if(!$integrationSettings->cilia_token)
             throw new BusinessException('Não é possível realizar a integração com a Cilia sem um token de autenticação', 400);
 
+         $deliveryTimes = $this->deliveryTime->findStatesWithDeliveryByCompanyId($companyId);
+         if($deliveryTimes->count() < 1)
+            throw new BusinessException('Não é possível realizar a integração sem prazo de entrega para pelo menos um estado');
 
-         $deliveryTimes       = $this->deliveryTime->findStatesWithDeliveryByCompanyId($companyId);
-         $partGroups          = $this->partGroup->where('company_id', $companyId)->get();
+         $partGroups = $this->partGroup->where('company_id', $companyId)->get();
 
          $linxUser     = $integrationSettings->linx_user;
          $linxPassword = Crypt::decrypt($integrationSettings->linx_password);
          $linxAuthKey  = Crypt::decrypt($integrationSettings->linx_auth_key);
          $linxStockKey = Crypt::decrypt($integrationSettings->linx_stock_key);
-
-         error_log($linxAuthKey);
 
          $linxAuthResponse = $this->linxService->auth($linxAuthKey, $linxUser, $linxPassword);
 
@@ -166,6 +210,9 @@ class IntegrationBusiness {
          throw new Exception($e->getMessage());
 
       } finally {
+         $endTime = new DateTime();
+         $integrationExecution['end_time'] = $endTime;
+
          $this->deleteCsv($csvPath);
          $this->integrationExecution->create($integrationExecution);
       }
@@ -186,11 +233,11 @@ class IntegrationBusiness {
 
             return new CiliaStockItemDto(
                brand:         $part->NomeMarca,
-               code:          $part->CodigoEstoque,
+               code:          $part->ItemEstoque,
                name:          $part->DescricaoItemEstoque,
-               price:         $part->Preco,
+               price:         $part->PrecoSugerido,
                stockQuantity: $part->QuantidadeDisponivel,
-               sku:           $part->CodigoEanGtin,
+               sku:           9999,
                state:         $deliveryTime->uf,
                deliveryTime:  $deliveryTime->days,
                partGroupType: $partGroupType
