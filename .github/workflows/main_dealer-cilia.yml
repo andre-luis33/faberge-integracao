@@ -40,9 +40,6 @@ jobs:
           name: php-app
           path: release.zip
 
-      - name: Install cron
-        run: sudo apt-get update && sudo apt-get install -y cron
-
   deploy:
     runs-on: ubuntu-latest
     needs: build
