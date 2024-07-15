@@ -41,7 +41,7 @@ jobs:
           path: release.zip
 
       - name: Install cron
-        run: apt-get update && apt-get install -y cron
+        run: sudo apt-get update && sudo apt-get install -y cron
 
   deploy:
     runs-on: ubuntu-latest
