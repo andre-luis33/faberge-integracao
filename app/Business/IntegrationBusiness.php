@@ -256,8 +256,12 @@ class IntegrationBusiness {
       $filePath= storage_path('app/').time() . 'stock' . rand(0, 100) . '.csv';
       $file = fopen($filePath, 'w');
 
-      $teste = ['vasco', 'flamengo', 'fluminense'];
       $allWentGood = true;
+
+      // adding csv header
+      $stockParts->prepend([
+         'MARCA', 'CODIGO', 'NOME', 'PRECO', 'PRAZO DE ENTREGA', 'ESTOQUE', 'ESTADO', 'SKU', 'TIPO DE PECA'
+      ]);
 
       $stockParts->each(function ($part) use ($file, &$allWentGood) {
          if(!fputcsv($file, (array) $part, ','))
