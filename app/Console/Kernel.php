@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\ClearCronLog;
 use App\Jobs\StockUpdate;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -17,6 +18,9 @@ class Kernel extends ConsoleKernel
          ->everyMinute()
          ->weekdays()
          ->between('7:00', '22:00');
+
+      $schedule->job(new ClearCronLog)
+         ->dailyAt('00:00');
    }
 
    /**
