@@ -65,7 +65,7 @@
 
          <div class="pl-4 mt-3">
             <p class="text-purple-primary">
-               Você deve fornecer o usuário e senha da API da Linx para que os dados de estoque sejam obtidos.
+               Você deve fornecer as informações necessárias da Linx para que os dados de estoque sejam obtidos.
             </p>
 
             <div class="form-group">
@@ -73,25 +73,48 @@
                   <div class="col-md-2">
                      <div class="input-wrapper">
                         <i class="fas fa-user"></i>
-                        <input class="form-control" type="text" id="linx-user" placeholder="Usuário" data-required>
+                        <input class="form-control" type="text" id="linx-user" placeholder="Usuário" data-required data-toggle="tooltip" data-placement="bottom" title="O usuário usado para gerar um token de acesso (login)">
                      </div>
                   </div>
                   <div class="col-md-2">
                      <div class="input-wrapper">
                         <i class="fas fa-lock"></i>
-                        <input class="form-control" type="text" id="linx-password" placeholder="Senha" data-required>
+                        <input class="form-control" type="text" id="linx-password" placeholder="Senha" data-required data-toggle="tooltip" data-placement="bottom" title="A senha usada para gerar um token de acesso (login)">
                      </div>
                   </div>
                   <div class="col-md-3">
                      <div class="input-wrapper">
                         <i class="fas fa-key"></i>
-                        <input class="form-control" type="text" id="linx-auth-key" placeholder="Subscription Key (Login)" data-required>
+                        <input class="form-control" type="text" id="linx-auth-key" placeholder="Subscription Key (Login)" data-required data-toggle="tooltip" data-placement="bottom" title="A subscription key usada para gerar um token de acesso (login)">
                      </div>
                   </div>
                   <div class="col-md-3">
                      <div class="input-wrapper">
                         <i class="fas fa-key"></i>
-                        <input class="form-control" type="text" id="linx-stock-key" placeholder="Subscription Key (Estoque)" data-required>
+                        <input class="form-control" type="text" id="linx-stock-key" placeholder="Subscription Key (Estoque)" data-required data-toggle="tooltip" data-placement="bottom" title="A subscription key usada para buscar os dados de estoque">
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <div class="form-group">
+               <div class="form-row">
+                  <div class="col-md-4">
+                     <div class="input-wrapper">
+                        <i class="fas fa-globe-americas"></i>
+                        <input class="form-control" type="text" id="linx-environment" placeholder="Ambiente" data-required data-toggle="tooltip" data-placement="bottom" title="O ambiente usado para gerar um token de acesso (login) e buscar os dados de acesso">
+                     </div>
+                  </div>
+                  <div class="col-md-2">
+                     <div class="input-wrapper">
+                        <i class="fas fa-building"></i>
+                        <input class="form-control" type="text" id="linx-company" placeholder="Empresa" data-required data-toggle="tooltip" data-placement="bottom" title="A empresa usada para filtrar os dados de estoque">
+                     </div>
+                  </div>
+                  <div class="col-md-2">
+                     <div class="input-wrapper">
+                        <i class="fas fa-certificate"></i>
+                        <input class="form-control" type="text" id="linx-resale" placeholder="Revenda" data-required data-toggle="tooltip" data-placement="bottom" title="A revenda usada para filtrar os dados de estoque">
                      </div>
                   </div>
                </div>

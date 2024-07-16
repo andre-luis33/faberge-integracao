@@ -18,6 +18,9 @@ class IntegrationSettings extends Model
       'linx_password',
       'linx_auth_key',
       'linx_stock_key',
+      'linx_environment',
+      'linx_company',
+      'linx_resale',
       'cilia_token',
    ];
 

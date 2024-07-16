@@ -14,6 +14,9 @@ jQuery(function() {
    const linxPassword = $('#linx-password')
    const linxAuthKey  = $('#linx-auth-key')
    const linxStockKey = $('#linx-stock-key')
+   const linxEnvironment = $('#linx-environment')
+   const linxCompany = $('#linx-company')
+   const linxResale = $('#linx-resale')
    const ciliaToken = $('#cilia-token')
 
    const submitBtn = $('#btn-submit')
@@ -75,6 +78,9 @@ jQuery(function() {
          linx_password: password,
          linx_auth_key: authKey,
          linx_stock_key: stockKey,
+         linx_environment: linxEnvironment.val(),
+         linx_company: linxCompany.val(),
+         linx_resale: linxResale.val(),
          cilia_token: token
       }
 
@@ -97,7 +103,7 @@ jQuery(function() {
          loader.show()
 
          const settings = await IntegrationSettingsService.get()
-         const { enabled, interval, linx_password, linx_user, cilia_token, linx_auth_key, linx_stock_key } = settings
+         const { enabled, interval, linx_password, linx_user, cilia_token, linx_auth_key, linx_stock_key, linx_environment, linx_company, linx_resale } = settings
 
          resetIntervalBtns()
 
@@ -109,6 +115,9 @@ jQuery(function() {
          linxPassword.val(linx_password)
          linxAuthKey.val(linx_auth_key)
          linxStockKey.val(linx_stock_key)
+         linxEnvironment.val(linx_environment)
+         linxCompany.val(linx_company)
+         linxResale.val(linx_resale)
          ciliaToken.val(cilia_token)
 
          LINX_PASSWORD_API_VALUE = linx_password

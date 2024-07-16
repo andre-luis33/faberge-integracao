@@ -26,7 +26,7 @@ class IntegrationSettingsController extends Controller
    public function index() {
       $companyId = $this->session->company->id;
       $settings = $this->integrationSettings
-         ->select(['interval', 'enabled', 'linx_user', 'linx_password', 'linx_auth_key', 'linx_stock_key', 'cilia_token'])
+         ->select(['interval', 'enabled', 'linx_user', 'linx_password', 'linx_auth_key', 'linx_stock_key', 'cilia_token', 'linx_environment', 'linx_company', 'linx_resale'])
          ->where('company_id', $companyId)
          ->first();
 
@@ -49,13 +49,16 @@ class IntegrationSettingsController extends Controller
    public function update(Request $request) {
 
       $data = $request->validate([
-         'enabled'        => 'required|boolean',
-         'interval'       => 'required|integer|in:15,30,45,60',
-         'linx_user'      => 'nullable|string|max:50',
-         'linx_password'  => 'nullable|string|max:50',
-         'linx_auth_key'  => 'nullable|string|max:50',
-         'linx_stock_key' => 'nullable|string|max:50',
-         'cilia_token'    => 'nullable|string|max:100',
+         'enabled'          => 'required|boolean',
+         'interval'         => 'required|integer|in:15,30,45,60',
+         'linx_user'        => 'required|string|max:50',
+         'linx_password'    => 'nullable|string|max:50',
+         'linx_auth_key'    => 'nullable|string|max:50',
+         'linx_stock_key'   => 'nullable|string|max:50',
+         'linx_environment' => 'required|string|max:50',
+         'linx_company'     => 'required|string|max:50',
+         'linx_resale'      => 'required|string|max:50',
+         'cilia_token'      => 'nullable|string|max:100',
       ]);
 
       $data = $this->encryptOrUnsetKey($data, 'linx_password', $request);

@@ -18,6 +18,9 @@ return new class extends Migration
          $table->string('linx_password', 500)->default(true);
          $table->string('linx_auth_key', 500)->default(true);
          $table->string('linx_stock_key', 500)->default(true);
+         $table->string('linx_environment', 500)->default(true);
+         $table->string('linx_company', 500)->default(true);
+         $table->string('linx_resale', 500)->default(true);
          $table->string('cilia_token', 500)->default(true);
          $table->unsignedInteger('company_id');
          $table->boolean('enabled')->default(true);
