@@ -11,16 +11,23 @@ use Illuminate\Support\Facades\Cache;
 class LinxService extends BaseService {
 
    private string $mockJsonPath;
-   private string $baseUrl = "https://linxdmsapi.azure-api.net";
+   private string $baseUrl = "https://auto-gwsmartapi.linx.com.br";
    private int    $cacheTTL = 900;
    private string $cacheKey = "linx_access_token";
    private string $accessToken;
-
+   /**
+    * This is not used for dev/stage/prod purposes, its actually a linx api rule
+    */
+   private string $environment;
 
    public function __construct() {
       parent::__construct();
       $this->configureHttpClient($this->baseUrl, 10);
       $this->mockJsonPath = app_path('/Mocks/stock.json');
+   }
+
+   public function setEnvironment(string $environment): void {
+      $this->environment = $environment;
    }
 
    public function auth(string $subscriptionKey, string $username, string $password): LinxAuthResponseDto {
@@ -35,7 +42,8 @@ class LinxService extends BaseService {
 
             $response = $this->httpClient->post("{$this->baseUrl}/api-seguranca/token", [
                'headers' => [
-                  'Ocp-Apim-Subscription-Key' => $subscriptionKey
+                  'Ocp-Apim-Subscription-Key' => $subscriptionKey,
+                  'Ambiente' => $this->environment
                ],
                'form_params' => [
                   'username' => $username,
@@ -54,6 +62,16 @@ class LinxService extends BaseService {
             }
 
             throw $e;
+
+         } catch (Exception $e) {
+            if ($i < $retryCount - 1) {
+               usleep($secondsRetryDelay);
+               $i++;
+               continue;
+            }
+
+            throw $e;
+
          }
 
       }
@@ -70,17 +88,18 @@ class LinxService extends BaseService {
       return new LinxAuthResponseDto($body, $statusCode);
    }
 
-   public function getStock(string $subscriptionKey): LinxStockResponseDto {
+   public function getStock(string $subscriptionKey, string $company, string $resale): LinxStockResponseDto {
 
-      $response = $this->httpClient->post("{$this->baseUrl}/pecas-balcao/ConsultaPecaGerencial", [
+      $response = $this->httpClient->post("{$this->baseUrl}/api-pecas-balcao/ConsultaPecaGerencial", [
          'headers' => [
             'Ocp-Apim-Subscription-Key' => $subscriptionKey,
+            'Ambiente' => $this->environment,
             'Authorization' => "Bearer {$this->accessToken}",
          ],
          'json' => [
             'ConfiguracaoBase' => [
-               'Empresa' => 1,
-               'Revenda' => 1,
+               'Empresa' => $company,
+               'Revenda' => $resale,
                'Usuario' => 0,
                'CodigoOrigem' => 0,
                'IdentificadorOrigem' => ''

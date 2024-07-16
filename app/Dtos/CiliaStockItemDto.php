@@ -7,7 +7,7 @@ class CiliaStockItemDto {
    public string $brand;
    public string $code;
    public string $name;
-   public float $price;
+   public string $price;
    public int $deliveryTime;
    public int $stockQuantity;
    public string $state;
@@ -18,7 +18,7 @@ class CiliaStockItemDto {
       string $brand,
       string $code,
       string $name,
-      float $price,
+      string $price,
       int $stockQuantity,
       string $sku,
       string $state,

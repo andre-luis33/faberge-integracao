@@ -136,11 +136,14 @@ class IntegrationBusiness {
             $integrationSettings->linx_user &&
             $integrationSettings->linx_password &&
             $integrationSettings->linx_auth_key &&
-            $integrationSettings->linx_stock_key
+            $integrationSettings->linx_stock_key &&
+            $integrationSettings->linx_environment &&
+            $integrationSettings->linx_company &&
+            $integrationSettings->linx_resale
          ;
 
          if(!$allLinxFieldsHaveValue)
-            throw new BusinessException('Não é possível realizar a integração com a Linx sem um usuário, senha e subscription key', 400);
+            throw new BusinessException('Não é possível realizar a integração com a Linx sem um usuário, senha, subscription keys, ambiente, empresa e revenda', 400);
 
          if(!$integrationSettings->cilia_token)
             throw new BusinessException('Não é possível realizar a integração com a Cilia sem um token de autenticação', 400);
@@ -151,11 +154,15 @@ class IntegrationBusiness {
 
          $partGroups = $this->partGroup->where('company_id', $companyId)->get();
 
-         $linxUser     = $integrationSettings->linx_user;
+         $linxUser        = $integrationSettings->linx_user;
+         $linxEnvironment = $integrationSettings->linx_environment;
+         $linxCompany     = $integrationSettings->linx_company;
+         $linxResale      = $integrationSettings->linx_resale;
          $linxPassword = Crypt::decrypt($integrationSettings->linx_password);
          $linxAuthKey  = Crypt::decrypt($integrationSettings->linx_auth_key);
          $linxStockKey = Crypt::decrypt($integrationSettings->linx_stock_key);
 
+         $this->linxService->setEnvironment($linxEnvironment);
          $linxAuthResponse = $this->linxService->auth($linxAuthKey, $linxUser, $linxPassword);
 
          $integrationExecution['linx_status_code'] = $linxAuthResponse->statusCode;
@@ -164,7 +171,7 @@ class IntegrationBusiness {
          if($linxAuthResponse->statusCode != 200)
             throw new BusinessException("Erro ao se autenticar na linx! Status HTTP: {$linxAuthResponse->statusCode} | Resposta API: {$linxAuthResponse->json}", $linxAuthResponse->statusCode);
 
-         $linxResponse = $this->linxService->getStock($linxStockKey);
+         $linxResponse = $this->linxService->getStock($linxStockKey, $linxCompany, $linxResale);
 
          $integrationExecution['linx_status_code'] = $linxResponse->statusCode;
          $integrationExecution['linx_response'] = $linxResponse->json;
@@ -237,7 +244,7 @@ class IntegrationBusiness {
                name:          $part->DescricaoItemEstoque,
                price:         $part->PrecoSugerido,
                stockQuantity: $part->QuantidadeDisponivel,
-               sku:           9999,
+               sku:           '',
                state:         $deliveryTime->uf,
                deliveryTime:  $deliveryTime->days,
                partGroupType: $partGroupType
