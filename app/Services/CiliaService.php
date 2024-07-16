@@ -37,23 +37,23 @@ class CiliaService extends BaseService {
       $response = $this->httpClient->post("{$this->baseUrl}/api/integration/ext/supply_pieces/batch/file", [
          'multipart' => [
             [
-               'name'     => 'auth_token',
-               'contents' => $this->authToken,
-            ],
-            [
                'name'     => 'keep_only_present_in_file',
                'contents' => $override ? 'true' : 'false',
             ],
             [
-               'name'     => 'file',
-               'contents' => fopen($csvPath, 'r'),
-               'filename' => 'estoque.csv'
+               'name'     => 'auth_token',
+               'contents' => $this->authToken,
             ],
+            // [
+            //    'name'     => 'file',
+            //    'contents' => fopen($csvPath, 'r'),
+            //    'filename' => 'estoque.csv',
+            //    'headers' => [
+            //       'Content-Type' => 'text/csv'
+            //    ]
+            // ],
          ]
       ]);
-
-      // if($response->getStatusCode() !== 200)
-      //    throw new Exception($response->getBody(), $response->getStatusCode());
 
       return new CiliaSendCsvResponseDto($response->getBody(), $response->getStatusCode());
    }
