@@ -39,7 +39,11 @@ class IntegrationSettings extends Model
          ->select(['company_id'])
          ->whereRaw("
                DATEDIFF(MINUTE,
-                  (SELECT MAX(il.created_at)
+                  (SELECT
+                     CASE
+                        WHEN MAX(il.created_at) IS NULL THEN '1900-01-01 00:00:00'
+                        ELSE MAX(il.created_at)
+                     END
                   FROM integration_executions AS il
                   WHERE il.company_id = integration_settings.company_id), ?) >= integration_settings.interval
          ", [$now])
