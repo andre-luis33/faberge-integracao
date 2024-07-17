@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
       $schedule->job(new StockUpdate)
          ->everyMinute()
          ->weekdays()
-         ->between('7:00', '22:00');
+         ->between('7:00', '23:00');
 
       $schedule->job(new ClearCronLog)
          ->dailyAt('00:00');
