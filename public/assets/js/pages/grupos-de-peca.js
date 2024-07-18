@@ -14,6 +14,11 @@ jQuery(function() {
       appendPartGroupRow('Grupo A')
    })
 
+   $(window).on('keyup', e => {
+      if(e.key === 'Enter')
+         form.trigger('submit')
+   })
+
    form.on('submit', async e => {
 
       e.preventDefault()

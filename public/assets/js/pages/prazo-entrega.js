@@ -6,6 +6,11 @@ jQuery(function() {
    const form = $('#delivery-times-form')
    const btnSubmit = $('#btn-submit')
 
+   $(window).on('keyup', e => {
+      if(e.key === 'Enter')
+         form.trigger('submit')
+   })
+
    form.on('submit', async e => {
 
       e.preventDefault()
