@@ -190,7 +190,7 @@ jQuery(function() {
             linxStatus = `<span class="bg-danger text-white py-1 px-2 rounded">Erro</span>`
          }
 
-         if(cilia_status_code === 200) {
+         if(cilia_status_code === 204) {
             ciliaStatus = `<span class="bg-success text-white py-1 px-2 rounded">Sucesso</span>`
          } else if (cilia_status_code) {
             ciliaStatus = `<span class="bg-danger text-white py-1 px-2 rounded">Erro</span>`
