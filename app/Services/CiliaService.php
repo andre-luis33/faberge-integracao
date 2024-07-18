@@ -22,7 +22,7 @@ class CiliaService extends BaseService {
          $this->baseUrl = "https://qa.cilia.com.br";
       }
 
-      $this->configureHttpClient($this->baseUrl);
+      $this->configureHttpClient($this->baseUrl, 10);
    }
 
    public function setAuthToken(string $authToken): void {
