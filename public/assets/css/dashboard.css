@@ -327,6 +327,12 @@ main {
    margin-right: 25px;
 }
 
+@media (min-width: 1700px) {
+   .main-wrapper {
+      height: 80vh;
+   }
+}
+
 .main-wrapper .form-row {
    margin-inline: 0;
 }
