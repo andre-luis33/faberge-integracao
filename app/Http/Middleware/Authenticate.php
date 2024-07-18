@@ -15,8 +15,6 @@ class Authenticate
     */
    public function handle(Request $request, Closure $next): Response
    {
-      dd(session()->all());
-
       if(!session()->get('user'))
          return $request->expectsJson() ? response()->json('Acesso não autorizado.', 401) : redirect('login');
 
