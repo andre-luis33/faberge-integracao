@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -24,14 +25,11 @@ class AuthController extends Controller
       ]);
 
       $credentials = $request->only('email', 'password');
+      $user = User::where('email', $credentials['email'])->first();
 
-      if (!Auth::attempt($credentials)) {
+      if (!$user || !Hash::check($credentials['password'], $user->password)) {
          abort(400, 'Usuário/Senha inválidos');
       }
-
-      /** @var User */
-      $user = Auth::user();
-
 
       /** @var Collection */
       $companies = $user->companies()
@@ -53,7 +51,6 @@ class AuthController extends Controller
       $request->session()->put('user.companies',    $companies->makeHidden('primary')->toArray());
 
       $request->session()->put('user.sidebar.closed', false);
-
       return response()->json(['message' => 'Sucesso'], 200);
    }
 
