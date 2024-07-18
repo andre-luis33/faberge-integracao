@@ -37,6 +37,7 @@ class IntegrationSettings extends Model
 
       return $this
          ->select(['company_id'])
+         ->where('integration_settings.enabled', true)
          ->whereRaw("
                DATEDIFF(MINUTE,
                   (SELECT
