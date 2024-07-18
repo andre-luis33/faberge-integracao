@@ -235,8 +235,9 @@ class IntegrationBusiness {
       return $parts->flatMap(function(LinxStockPartDto $part) use ($deliveryTimes, $partGroups) {
 
          return $deliveryTimes->map(function($deliveryTime) use ($part, $partGroups) {
-            $partGroup     = $partGroups->where('category', $part->GrupoDaMontadora)->first();
-            $partGroupType = $partGroup ? $partGroup->type : 'Outras Fontes';
+            // $partGroup     = $partGroups->where('category', $part->GrupoDaMontadora)->first();
+            // $partGroupType = $partGroup ? $partGroup->type : 'Outras Fontes';
+            $partGroupType = 'Genuína';
 
             return new CiliaStockItemDto(
                brand:         $part->NomeMarca,
