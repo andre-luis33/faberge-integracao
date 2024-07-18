@@ -44,14 +44,14 @@ class CiliaService extends BaseService {
                'name'     => 'auth_token',
                'contents' => $this->authToken,
             ],
-            // [
-            //    'name'     => 'file',
-            //    'contents' => fopen($csvPath, 'r'),
-            //    'filename' => 'estoque.csv',
-            //    'headers' => [
-            //       'Content-Type' => 'text/csv'
-            //    ]
-            // ],
+            [
+               'name'     => 'file',
+               'contents' => fopen($csvPath, 'r'),
+               'filename' => 'estoque.csv',
+               'headers' => [
+                  'Content-Type' => 'text/csv'
+               ]
+            ],
          ]
       ]);
 
