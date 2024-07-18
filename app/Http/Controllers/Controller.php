@@ -19,7 +19,7 @@ class Controller extends BaseController
    {
       $this->middleware(function ($request, $next) {
 
-         if (Auth::check()) {
+         if (session()->get('user')) {
 
             $company = new SessionCompanyDto(
                (int) session()->get('user.company.id'),
