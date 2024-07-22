@@ -77,11 +77,10 @@ Route::prefix('/api')->group(function () {
 
       Route::prefix('/me')->group(function() {
          Route::get('/',  [ProfileController::class, 'index']);
-         Route::put('/',  [ProfileController::class,  'update']);
+         Route::put('/',  [ProfileController::class, 'update']);
       });
 
       Route::prefix('/companies')->group(function() {
-         Route::get('/',  [CompanyController::class, 'index']);
          Route::post('/', [CompanyController::class,  'store']);
          Route::put('/{id}', [CompanyController::class,  'update']);
       });
