@@ -47,7 +47,7 @@
 
          <div class="pl-4 mt-3">
             <p class="text-purple-primary">
-               Selecione uma opção abaixo.
+               Selecione uma opção abaixo. A execução automática roda de segunda a sexta, das 7:00 às 23:00
             </p>
 
             @foreach($executionsIntervals as $interval)
