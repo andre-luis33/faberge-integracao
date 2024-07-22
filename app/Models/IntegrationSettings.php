@@ -46,7 +46,7 @@ class IntegrationSettings extends Model
                         ELSE MAX(il.created_at)
                      END
                   FROM integration_executions AS il
-                  WHERE il.company_id = integration_settings.company_id), ?) >= integration_settings.interval
+                  WHERE il.company_id = integration_settings.company_id AND il.forced_execution = 0), ?) >= integration_settings.interval
          ", [$now])
          ->get();
    }
