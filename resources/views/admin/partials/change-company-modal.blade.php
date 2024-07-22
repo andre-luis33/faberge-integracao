@@ -1,10 +1,14 @@
+@php
+   $companies = collect(session()->get('user.companies'))->sortBy('name');
+@endphp
+
 <x-modal id="change-company-modal" title="Trocar Empresa" size="md">
    <x-slot name="body">
       <form id="change-company-form">
          <div class="input-wrapper">
             <i class="fas fa-building"></i>
             <select class="form-control" type="text" id="select-current-company" placeholder="Nome" data-required>
-               @foreach (session()->get('user.companies') as $company)
+               @foreach ($companies as $company)
                   <option value="{{ $company['id'] }}" {{ $company['id'] === session()->get('user.company.id') ? 'selected' : '' }}>{{ $company['name'] }}</option>
                @endforeach
             </select>

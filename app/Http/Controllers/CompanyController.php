@@ -23,6 +23,7 @@ class CompanyController extends Controller
       $userId = $this->session->userId;
       $companies = $this->company
          ->where('user_id', $userId)
+         ->orderBy('name')
          ->get()
          ->makeHidden('user_id');
 
