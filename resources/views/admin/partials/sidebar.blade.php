@@ -49,6 +49,12 @@
                <span>Integração</span>
             </a>
          </li>
+         <li>
+            <a class="{{ Request::is('admin/perfil') ? 'active' : ''}}" href="{{route('admin.perfil')}}">
+               <i class="fas fa-user-edit"></i>
+               <span>Perfil</span>
+            </a>
+         </li>
       </ul>
 
       <a href="#" class="logout-link" id="btn-logout">

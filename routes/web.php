@@ -6,6 +6,7 @@ use App\Http\Controllers\DeliveryTimeController;
 use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\IntegrationSettingsController;
 use App\Http\Controllers\PartGroupController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +49,10 @@ Route::prefix('/admin')->middleware('auth')->group(function () {
       return view('admin.content.empresas');
    })->name('admin.empresas');
 
+   Route::get('/perfil', function () {
+      return view('admin.content.perfil');
+   })->name('admin.perfil');
+
    Route::get('/integracao', function () {
       return view('admin.content.integracao');
    })->name('admin.integracao');
@@ -68,6 +73,11 @@ Route::prefix('/api')->group(function () {
          Route::get('/', [SessionController::class, 'index']);
          Route::put('/sidebar', [SessionController::class, 'sidebar']);
          Route::put('/active-company/{id}', [SessionController::class, 'activeCompany']);
+      });
+
+      Route::prefix('/me')->group(function() {
+         Route::get('/',  [ProfileController::class, 'index']);
+         Route::put('/',  [ProfileController::class,  'update']);
       });
 
       Route::prefix('/companies')->group(function() {
