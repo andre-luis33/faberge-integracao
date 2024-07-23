@@ -81,6 +81,7 @@ Route::prefix('/api')->group(function () {
       });
 
       Route::prefix('/companies')->group(function() {
+         Route::get('/',  [CompanyController::class, 'index']);
          Route::post('/', [CompanyController::class,  'store']);
          Route::put('/{id}', [CompanyController::class,  'update']);
       });
