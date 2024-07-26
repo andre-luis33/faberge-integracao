@@ -3,6 +3,7 @@
 namespace App\Business;
 use App\Dtos\CiliaStockItemDto;
 use App\Dtos\LinxStockPartDto;
+use App\Dtos\LinxStockResponseDto;
 use App\Exceptions\BusinessException;
 use App\Models\DeliveryTime;
 use App\Models\IntegrationExecution;
@@ -166,7 +167,6 @@ class IntegrationBusiness {
          $linxAuthResponse = $this->linxService->auth($linxAuthKey, $linxUser, $linxPassword);
 
          $integrationExecution['linx_status_code'] = $linxAuthResponse->statusCode;
-         $integrationExecution['linx_response'] = $linxAuthResponse->json;
 
          if($linxAuthResponse->statusCode != 200)
             throw new BusinessException("Erro ao se autenticar na linx! Status HTTP: {$linxAuthResponse->statusCode} | Resposta API: {$linxAuthResponse->json}", $linxAuthResponse->statusCode);
@@ -174,7 +174,7 @@ class IntegrationBusiness {
          $linxResponse = $this->linxService->getStock($linxStockKey, $linxCompany, $linxResale);
 
          $integrationExecution['linx_status_code'] = $linxResponse->statusCode;
-         $integrationExecution['linx_response'] = $linxResponse->json;
+         $integrationExecution['linx_response'] = $this->linxStockResponseSummary($linxResponse);
 
          if($linxResponse->statusCode !== 200)
             throw new BusinessException("Erro ao buscar dados de estoque na linx! Status HTTP: {$linxResponse->statusCode} | Resposta API: {$linxResponse->json}", $linxResponse->statusCode);
@@ -224,6 +224,11 @@ class IntegrationBusiness {
          $this->integrationExecution->create($integrationExecution);
       }
 
+   }
+
+   public function linxStockResponseSummary(LinxStockResponseDto $response): string {
+      $partsCount = $response->stockParts->count();
+      return "LinxStock Request returned {$partsCount} items";
    }
 
    /**
