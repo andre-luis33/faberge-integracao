@@ -22,7 +22,7 @@ class LinxService extends BaseService {
 
    public function __construct() {
       parent::__construct();
-      $this->configureHttpClient($this->baseUrl, 10);
+      $this->configureHttpClient($this->baseUrl, 30);
       $this->mockJsonPath = app_path('/Mocks/stock.json');
    }
 
