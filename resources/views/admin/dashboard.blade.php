@@ -16,7 +16,11 @@
 
    @yield('styles')
 
-   <title>Faberge Integração</title>
+   @if(session('user.admin'))
+      <title>{{ config('app.name') }} - Administrador</title>
+   @else
+      <title>{{ config('app.name') .' - '. session('user.company.name')}}</title>
+   @endif
 </head>
 <body>
    <main>
@@ -35,7 +39,9 @@
 
       <div id="alerty"></div>
 
-      @include('admin.partials.change-company-modal')
+      @if(!session('user.admin'))
+         @include('admin.partials.change-company-modal')
+      @endif
 
    </main>
 

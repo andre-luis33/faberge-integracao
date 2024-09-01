@@ -31,26 +31,37 @@ class AuthController extends Controller
          abort(400, 'Usuário/Senha inválidos');
       }
 
-      /** @var Collection */
-      $companies = $user->companies()
-         ->select(['id', 'name', 'cnpj', 'primary'])
-         ->where('active', true)
-         ->get();
-
-      $activeCompany = $companies->where('primary', true)->first();
+      if(!$user->active)
+         abort(400, 'O seu usuário foi desativado! Por favor, contate o suporte da Dealer para reativá-lo.');
 
       $request->session()->regenerate();
 
-      $request->session()->put('user.id',    $user->id);
-      $request->session()->put('user.name',  $user->name);
-      $request->session()->put('user.email', $user->email);
-
-      $request->session()->put('user.company.id',   $activeCompany->id);
-      $request->session()->put('user.company.name', $activeCompany->name);
-      $request->session()->put('user.company.cnpj', $activeCompany->cnpj);
-      $request->session()->put('user.companies',    $companies->makeHidden('primary')->toArray());
+      $request->session()->put('user.id',       $user->id);
+      $request->session()->put('user.name',     $user->name);
+      $request->session()->put('user.email',    $user->email);
+      $request->session()->put('user.admin',    $user->admin);
 
       $request->session()->put('user.sidebar.closed', false);
+
+      if(!$user->admin) {
+
+         $request->session()->put('user.logo_url', $user->logo_url);
+
+         /** @var Collection */
+         $companies = $user->companies()
+            ->select(['id', 'name', 'cnpj', 'primary'])
+            ->where('active', true)
+            ->get();
+
+         $activeCompany = $companies->where('primary', true)->first();
+
+         $request->session()->put('user.company.id',   $activeCompany->id);
+         $request->session()->put('user.company.name', $activeCompany->name);
+         $request->session()->put('user.company.cnpj', $activeCompany->cnpj);
+         $request->session()->put('user.companies',    $companies->makeHidden('primary')->toArray());
+
+      }
+
       return response()->json(['message' => 'Sucesso'], 200);
    }
 

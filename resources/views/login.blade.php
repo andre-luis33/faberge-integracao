@@ -12,7 +12,7 @@
 
    <link rel="stylesheet" href="{{ asset('assets/css/global.css') }}">
    <link rel="stylesheet" href="{{ asset('assets/css/login.css') }}">
-   <title>Faberge Integração - Login</title>
+   <title>{{ config('app.name') }} - Login</title>
 </head>
 <body>
 

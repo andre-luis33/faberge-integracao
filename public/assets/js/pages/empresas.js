@@ -91,14 +91,6 @@ jQuery(function() {
                </button>
             </td>
          </tr>`)
-
-         // <td>
-         //    <label class="switch">
-         //       <input type="checkbox" id="status-btn" ${active ? 'checked' : ''}>
-         //       <span class="slider round"></span>
-         //    </label>
-         // </td>
-
       })
 
       $('[data-toggle="tooltip"]').tooltip()

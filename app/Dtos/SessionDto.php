@@ -7,6 +7,8 @@ class SessionDto {
    public int    $userId;
    public string $userName;
    public string $userEmail;
+   public string $logoUrl;
+   public bool   $admin;
    public bool   $sidebarClosed;
    public SessionCompanyDto $company;
 
@@ -16,12 +18,18 @@ class SessionDto {
    /**
     * @param SessionCompanyDto[] $companies
     */
-   public function __construct(int $userId, string $userName, string $userEmail, SessionCompanyDto $company, array $companies, bool $sidebarClosed = false) {
+   public function __construct(int $userId, string $userName, string $userEmail, string $logoUrl, SessionCompanyDto|null $company, array|null $companies, bool $admin, bool $sidebarClosed = false) {
       $this->userId        = $userId;
       $this->userName      = $userName;
       $this->userEmail     = $userEmail;
+      $this->logoUrl       = $logoUrl;
+      $this->admin         = $admin;
       $this->sidebarClosed = $sidebarClosed;
-      $this->company       = $company;
-      $this->companies     = $companies;
+
+      if($company)
+         $this->company = $company;
+
+      if($companies)
+         $this->companies = $companies;
    }
 }

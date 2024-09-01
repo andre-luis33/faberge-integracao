@@ -46,7 +46,7 @@ class IntegrationBusiness {
     * @return
     */
    public function findLastExecutions(int $companyId) {
-      $date = date('Y-m-d H:i:s', strtotime('-24 hours'));
+      $date = date('Y-m-d 07:00:00');
       $integrations = $this->integrationExecution
          ->select([
             'id',

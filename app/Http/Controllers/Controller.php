@@ -21,27 +21,41 @@ class Controller extends BaseController
 
          if (session()->get('user')) {
 
-            $company = new SessionCompanyDto(
-               (int) session()->get('user.company.id'),
-               session()->get('user.company.name'),
-               session()->get('user.company.cnpj')
-            );
+            if(session('user.admin')) {
 
-            $companies = [];
-            foreach(session()->get('user.companies') as $sessionCompany) {
-               $companies[] = new SessionCompanyDto(
-                  (int) $sessionCompany['id'],
-                  $sessionCompany['name'],
-                  $sessionCompany['cnpj'],
+               $company = null;
+               $companies = null;
+               $logoUrl = '';
+
+            } else {
+
+               $logoUrl = session()->get('user.logo_url');
+
+               $company = new SessionCompanyDto(
+                  (int) session()->get('user.company.id'),
+                  session()->get('user.company.name'),
+                  session()->get('user.company.cnpj')
                );
+
+               $companies = [];
+               foreach(session()->get('user.companies') as $sessionCompany) {
+                  $companies[] = new SessionCompanyDto(
+                     (int) $sessionCompany['id'],
+                     $sessionCompany['name'],
+                     $sessionCompany['cnpj'],
+                  );
+               }
+
             }
 
             $this->session = new SessionDto(
                session()->get('user.id'),
                session()->get('user.name'),
                session()->get('user.email'),
+               $logoUrl,
                $company,
                $companies,
+               (bool) session()->get('user.admin'),
                (bool) session()->get('user.sidebar.closed'),
             );
          }

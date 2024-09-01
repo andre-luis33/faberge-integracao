@@ -56,7 +56,7 @@ export function allFieldsHaveValue(fieldsSelector, shouldCallAlert = false) {
    })
 
    if (!flag && shouldCallAlert)
-      callAlert('danger', 'Quase lá!', 'Por favor, preencha todos os campos', 3)
+      alerty.show('danger', 'Quase lá!', 'Por favor, preencha todos os campos', 3)
 
    return flag
 }
