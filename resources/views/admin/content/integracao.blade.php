@@ -3,6 +3,8 @@
 
 @php
 
+   $isWeekDay = date('w') > 0 && date('w') < 6;
+
    $executionsIntervals = [
       15,
       30,
@@ -161,7 +163,11 @@
    <x-modal id="integrations-modal" title="Últimas Execuções" size="xl">
       <x-slot name="body">
          <div class="alert alert-info text-center font-italic">
-            Você está visualizando dados sobre as execuções das últimas 24 horas.
+            @if($isWeekDay)
+               Você está visualizando dados sobre as execuções de hoje, que acontecem entre 07:00 e 23:00.
+            @else
+               As execuções só acontecem de Segunda à Sexta, entre 07:00 e 23:00.
+            @endif
          </div>
 
          <div class="d-flex justify-content-between align-items-center mb-2">
