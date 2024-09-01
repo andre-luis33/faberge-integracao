@@ -26,8 +26,8 @@
                <tr>
                   <td>Nome</td>
                   <td>CNPJ</td>
+                  <td>Última Integração</td>
                   <td>Cadastrada em</td>
-                  {{-- <td>Ativa</td> --}}
                   <td>Editar</td>
                </tr>
             </thead>

@@ -7,6 +7,8 @@ import { API_URL } from "../config.js"
  * @property {string} name
  * @property {boolean} primary
  * @property {boolean} active
+ * @property {boolean} last_execution_successful
+ * @property {string|null} last_execution_at
  * @property {string} created_at
  * @property {string} updated_at
  */

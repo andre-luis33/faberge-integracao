@@ -22,10 +22,21 @@ class CompanyController extends Controller
    public function index() {
       $userId = $this->session->userId;
       $companies = $this->company
-         ->where('user_id', $userId)
-         ->orderBy('name')
+         ->select(['c.*', 'ie.cilia_status_code', 'ie.created_at as last_execution_at'])
+         ->from('companies as c')
+         ->leftJoin('integration_executions as ie', function($join) {
+            $join->on('c.id', '=', 'ie.company_id')
+                ->whereRaw('ie.created_at = (select max(created_at) from integration_executions where company_id = c.id)');
+         })
+         ->where('c.user_id', $userId)
+         ->orderBy('c.name')
          ->get()
-         ->makeHidden('user_id');
+         ->makeHidden('c.user_id');
+
+      $companies->each(function($company) {
+         $company->last_execution_successful = $company->cilia_status_code == 204;
+         unset($company->cilia_status_code);
+      });
 
       return response()->json($companies);
    }
