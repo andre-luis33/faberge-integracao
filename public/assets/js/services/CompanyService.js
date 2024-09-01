@@ -7,8 +7,17 @@ import { API_URL } from "../config.js"
  * @property {string} name
  * @property {boolean} primary
  * @property {boolean} active
+ * @property {boolean} last_execution_successful
+ * @property {string|null} last_execution_at
  * @property {string} created_at
  * @property {string} updated_at
+ */
+
+/**
+ * @typedef {object} LastExecution
+ * @property {number} company_id
+ * @property {boolean} last_execution_successful
+ * @property {string|null} last_execution_at
  */
 
 const URL = `${API_URL}/companies`
@@ -16,7 +25,7 @@ const URL = `${API_URL}/companies`
 /**
  * @returns {Promise<Company[]>}
  */
-export async function get() {
+export function get() {
 
    const config = {
       method: 'GET',
@@ -26,7 +35,19 @@ export async function get() {
    return $.ajax(config)
 }
 
-export async function create(data, btn) {
+/**
+ * @returns {Promise<LastExecution[]>}
+ */
+export function getLastExecutions() {
+   const config = {
+      method: 'GET',
+      url: `${URL}/integrations/executions/latest`,
+   }
+
+   return $.ajax(config)
+}
+
+export function create(data, btn) {
 
    const config = {
       method: 'POST',
@@ -38,7 +59,7 @@ export async function create(data, btn) {
    return $.ajax(config)
 }
 
-export async function update(companyId, data, btn) {
+export function update(companyId, data, btn) {
 
    const config = {
       method: 'PUT',
@@ -51,5 +72,5 @@ export async function update(companyId, data, btn) {
 }
 
 export default {
-   get, create, update
+   get, create, update, getLastExecutions
 }

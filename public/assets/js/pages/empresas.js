@@ -73,17 +73,18 @@ jQuery(function() {
 
       COMPANIES_GLOBAL.forEach(company => {
 
-         const { id, name, cnpj, created_at, active, primary } = company
+         const { id, name, cnpj, created_at, active, primary, last_execution_successful, last_execution_at } = company
 
          const primaryLabel = !primary ? '' : `
             <span class="bg-purple-primary text-light py-1 badge rounded">
-               <i class="fas fa-crown" data-toggle="tooltip" data-placement="top" title="Essa é a empresa que será selecionada no momento do login"></i>
+               <i class="fas fa-crown" data-toggle="tooltip" data-placement="right" title="Essa é a empresa que será selecionada no momento do login"></i>
             </span>
          `
 
          tbody.append(`<tr>
             <td>${primaryLabel} ${name}</td>
             <td>${masks.cnpj.apply(cnpj)}</td>
+            <td data-last-execution data-id="${id}"><i class="fas fa-spin fa-circle-notch"></i></td>
             <td>${dateHelper.formatToBr(created_at)}</td>
             <td>
                <button class="btn btn-sm btn-purple" data-id="${id}">
@@ -91,14 +92,6 @@ jQuery(function() {
                </button>
             </td>
          </tr>`)
-
-         // <td>
-         //    <label class="switch">
-         //       <input type="checkbox" id="status-btn" ${active ? 'checked' : ''}>
-         //       <span class="slider round"></span>
-         //    </label>
-         // </td>
-
       })
 
       $('[data-toggle="tooltip"]').tooltip()
@@ -131,6 +124,44 @@ jQuery(function() {
 
    }
 
+   async function getLastestExecutions() {
+
+      try {
+
+         const executions = await CompanyService.getLastExecutions()
+         let delay = 0
+         const allDelays = (executions.length * 50) + 20
+
+         $('[data-last-execution]').each(function() {
+            const id = $(this).attr('data-id')
+            console.log(id);
+
+            const execution = executions.find(execution => execution.company_id == id)
+
+            const lastExecutionLabel = !execution ? '<i>Nenhuma integração encontrada</i>' : `
+               <span class="bg-${execution.last_execution_successful ? 'success' : 'danger'} text-light p-1 rounded" data-toggle="tooltip" data-placement="right" title="Última integração foi nessa data e ${execution.last_execution_successful ? 'deu tudo certo' : 'aconteceu um erro'}">
+                  <i class="fas fa-${execution.last_execution_successful ? 'check' : 'times'}-circle"></i>
+                  ${dateHelper.formatToBr(execution.last_execution_at)}
+               </span>
+            `
+            setTimeout(() => {
+            $(this).html(lastExecutionLabel)
+            }, delay)
+
+            delay+=50
+         })
+
+         setTimeout(() => {
+            $('[data-toggle="tooltip"]').tooltip()
+         }, allDelays)
+
+
+      } catch (err) {
+         console.log(err);
+      }
+
+   }
+
    async function renderPage() {
 
       loader.show()
@@ -141,6 +172,8 @@ jQuery(function() {
          COMPANIES_GLOBAL = companies
 
          listCompanies()
+
+         getLastestExecutions()
 
       } catch (error) {
          console.error(error);

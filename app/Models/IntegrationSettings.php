@@ -36,8 +36,14 @@ class IntegrationSettings extends Model
       $now = date('Y-m-d H:i:s');
 
       return $this
-         ->select(['company_id'])
-         ->where('integration_settings.enabled', true)
+         ->select(['i.company_id'])
+         ->from('integration_settings as i')
+         ->join('companies as c', 'c.id', '=', 'i.company_id')
+         ->join('users as u', 'u.id', '=', 'c.user_id')
+         ->where([
+            'i.enabled' => true,
+            'u.active' => true
+         ])
          ->whereRaw("
                DATEDIFF(MINUTE,
                   (SELECT
@@ -46,7 +52,7 @@ class IntegrationSettings extends Model
                         ELSE MAX(il.created_at)
                      END
                   FROM integration_executions AS il
-                  WHERE il.company_id = integration_settings.company_id AND il.forced_execution = 0), ?) >= integration_settings.interval
+                  WHERE il.company_id = i.company_id AND il.forced_execution = 0), ?) >= i.interval
          ", [$now])
          ->get();
    }

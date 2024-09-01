@@ -16,6 +16,14 @@ class User extends Authenticatable
       'name',
       'email',
       'password',
+      'logo_url',
+      'admin',
+      'active',
+   ];
+
+   protected $casts = [
+      'admin' => 'boolean',
+      'active' => 'boolean',
    ];
 
    protected $hidden = [
