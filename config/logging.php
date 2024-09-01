@@ -113,6 +113,13 @@ return [
          'days' => 20,
          'replace_placeholders' => true,
       ],
+
+      'clear_cilia_payload' => [
+         'driver' => 'single',
+         'path' => storage_path('logs/clear_cilia_payload.log'),
+         'level' => env('LOG_LEVEL', 'debug'),
+         'replace_placeholders' => true,
+      ],
    ],
 
 ];
