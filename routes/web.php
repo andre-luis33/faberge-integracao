@@ -92,6 +92,7 @@ Route::prefix('/api')->group(function () {
 
          Route::prefix('/companies')->group(function() {
             Route::get('/',  [CompanyController::class, 'index']);
+            Route::get('/integrations/executions/latest', [IntegrationController::class, 'lastExecutions']);
             Route::post('/', [CompanyController::class,  'store']);
             Route::put('/{id}', [CompanyController::class,  'update']);
          });

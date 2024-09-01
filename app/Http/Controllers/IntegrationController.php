@@ -22,6 +22,15 @@ class IntegrationController extends Controller
       return response()->json($integrations);
    }
 
+   public function lastExecutions() {
+      $companyIds = array_map(function($company) {
+         return $company->id;
+      }, $this->session->companies);
+
+      $executions = $this->integrationBusiness->findLastExecutionStatusByCompanyIds($companyIds);
+      return response()->json($executions);
+   }
+
    public function downloadCsv(int $executionId) {
       $companyId = $this->session->company->id;
 

@@ -42,7 +42,7 @@ class IntegrationBusiness {
    }
 
    /**
-    * Searchs for all integrations in the past 24 hours and treats the error. When it's an app error, it provides a generic message for security reasons
+    * Searchs for all integrations of the current day and treats the error. When it's an app error, it provides a generic message for security reasons
     * @return
     */
    public function findLastExecutions(int $companyId) {
@@ -88,6 +88,29 @@ class IntegrationBusiness {
 
 
       return $integrations;
+   }
+
+   /**
+    * @param array<int> $ids
+    */
+   public function findLastExecutionStatusByCompanyIds(array $ids) {
+      $latestExecutions = DB::table('integration_executions as ie')
+         ->select('ie.company_id', 'ie.cilia_status_code', 'ie.created_at as last_execution_at')
+         ->join(DB::raw('(SELECT company_id, MAX(created_at) AS latest_created_at
+                           FROM integration_executions
+                           GROUP BY company_id) as latest'),
+               'ie.company_id', '=', 'latest.company_id')
+         ->whereColumn('ie.created_at', 'latest.latest_created_at')
+         ->whereIn('ie.company_id', $ids)
+         ->orderBy('ie.company_id')
+         ->get();
+
+      $latestExecutions->each(function($execution) {
+         $execution->last_execution_successful = $execution->cilia_status_code == 204;
+         unset($execution->cilia_status_code);
+      });
+
+      return $latestExecutions;
    }
 
    public function findIntegrationsToRun() {
