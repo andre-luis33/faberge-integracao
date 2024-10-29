@@ -123,6 +123,7 @@ Route::prefix('/api')->group(function () {
          Route::get('/',            [UserController::class, 'index']);
          Route::post('/',           [UserController::class, 'store']);
          Route::put('/{id}/active', [UserController::class, 'updateActive']);
+         Route::put('/{id}/companies/{companyId}/active', [UserController::class, 'updateCompanyActive']);
       });
 
    });

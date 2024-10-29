@@ -26,8 +26,8 @@
                <tr>
                   <td>Nome</td>
                   <td>E-mail</td>
-                  <td>Empresas</td>
                   <td>Cadastrado em</td>
+                  <td>Empresas</td>
                   <td>Ativo</td>
                </tr>
             </thead>
@@ -84,7 +84,7 @@
       </x-slot>
 
       <x-slot name="footer">
-         <button class="btn btn-secondary">
+         <button class="btn btn-secondary" data-dismiss="modal">
             Cancelar
          </button>
          <button class="btn btn-purple" type="submit" form="users-form" id="btn-submit">
@@ -93,9 +93,38 @@
       </x-slot>
    </x-modal>
 
+   <x-modal id="companies-modal" title="Empresas do Usuário" size="lg">
+      <x-slot name="body">
+         <div class="alert alert-info text-center">
+            Visualize todas as empresas que o usuário possui, e ative/desative elas. <br> As integrações das empresas desativadas não serão executadas.
+         </div>
+
+         <div class="table-responsive">
+            <table id="companies-table" class="table table-hover">
+               <thead>
+                  <tr>
+                     <td>Empresa.Revenda</td>
+                     <td>Nome</td>
+                     <td>CNPJ</td>
+                     <td>Ativa</td>
+                  </tr>
+               </thead>
+               <tbody></tbody>
+            </table>
+         </div>
+
+      </x-slot>
+
+      <x-slot name="footer">
+         <button class="btn btn-secondary" data-dismiss="modal">
+            Fechar
+         </button>
+      </x-slot>
+   </x-modal>
+
 @endsection
 
 @section('scripts')
-   <script type="module" src="{{asset('assets/js/pages/usuarios.js')}}"></script>
+   <script type="module" src="{{asset('assets/js/pages/usuarios.js?1')}}"></script>
 @endsection
 

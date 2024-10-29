@@ -35,7 +35,6 @@ jQuery(function() {
          cnpj: masks.cnpj.remove(form.cnpj.val()),
          name: form.name.val(),
          primary: form.primaryTrue.is(':checked'),
-         active: true,
       }
 
       const companyId = form.id.val()
@@ -50,6 +49,8 @@ jQuery(function() {
             await CompanyService.create(payload, form.btnSubmit)
 
          alerty.show('success', 'Sucesso!', 'Operação realizada com sucesso')
+         companiesModal.modal('hide')
+
          renderPage()
 
       } catch (error) {
@@ -81,16 +82,20 @@ jQuery(function() {
             </span>
          `
 
-         tbody.append(`<tr>
-            <td>${primaryLabel} ${name}</td>
+         const updateBtn = !active ? '--' : `
+            <button class="btn btn-sm btn-purple" data-id="${id}">
+               <i class="fas fa-edit"></i>
+            </button>
+         `
+
+         const style = active ? "" : 'style="opacity: 0.3; cursor: not-allowed'
+
+         tbody.append(`<tr ${style}">
+            <td>${primaryLabel} ${active ? '' : '[DESATIVADA]'} ${name}</td>
             <td>${masks.cnpj.apply(cnpj)}</td>
             <td data-last-execution data-id="${id}"><i class="fas fa-spin fa-circle-notch"></i></td>
             <td>${dateHelper.formatToBr(created_at)}</td>
-            <td>
-               <button class="btn btn-sm btn-purple" data-id="${id}">
-                  <i class="fas fa-edit"></i>
-               </button>
-            </td>
+            <td>${updateBtn}</td>
          </tr>`)
       })
 
@@ -134,7 +139,6 @@ jQuery(function() {
 
          $('[data-last-execution]').each(function() {
             const id = $(this).attr('data-id')
-            console.log(id);
 
             const execution = executions.find(execution => execution.company_id == id)
 

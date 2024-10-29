@@ -10,6 +10,9 @@ jQuery(function() {
    const usersCount = $('#users-count')
    const usersModal = $('#users-modal')
 
+   const companiesModal = $('#companies-modal')
+   const companiesTable = $('#companies-table')
+
    const DEFAULT_LOGO_URL = 'https://dealerstrg.blob.core.windows.net/apps/cilia/logo-dealer.png'
 
    const form = {
@@ -74,13 +77,18 @@ jQuery(function() {
 
          const { id, name, email, created_at, companies, active } = user
 
-         const companiesLabel = `<u data-toggle="tooltip" data-placement="left" title="${companies.join(', ')}">${companies.length} empresas</u>`
+         const companiesLabel = `
+            <button data-companies data-id="${id}" class="btn btn-sm btn-purple">
+               <i class="fas fa-edit"></i>
+               ${companies.length} empresas
+            </button>
+         `
 
          tbody.append(`<tr ${!active ? 'style="opacity: .5"' : ''}>
             <td>${name}</td>
             <td>${email}</td>
-            <td>${companiesLabel}</td>
             <td>${dateHelper.formatToBr(created_at)}</td>
+            <td>${companiesLabel}</td>
             <td>
                <label class="switch">
                   <input type="checkbox" data-status-btn data-id="${id}" ${active ? 'checked' : ''}>
@@ -99,13 +107,69 @@ jQuery(function() {
          updateStatus(id, status, $(this))
       })
 
+      $('[data-companies]').on('click', function() {
+         const id = parseInt($(this).attr('data-id'))
+         callCompaniesModal(id)
+      })
+
+   }
+
+   function callCompaniesModal(userId) {
+      const user = USERS_GLOBAL.find(user => user.id === userId)
+      if(!user) {
+         alerty.show('danger', 'Erro ao buscar empresas do usuário!')
+         return
+      }
+
+      const tbody = companiesTable.find('tbody')
+      tbody.empty()
+
+      const companies = user.companies
+      companies.forEach(company => {
+         const { linx_resale, linx_company, cnpj, name, id, active } = company
+
+         const integrationLabel = linx_resale && linx_company ? `${linx_company}.${linx_resale}` : '--'
+
+         tbody.append(`<tr>
+            <td>${integrationLabel}</td>
+            <td>${name}</td>
+            <td>${masks.cnpj.apply(cnpj)}</td>
+            <td>
+               <label class="switch">
+                  <input type="checkbox" data-company-status-btn data-user-id="${userId}" data-company-id="${id}" ${active ? 'checked' : ''}>
+                  <span class="slider round"></span>
+               </label>
+            </td>
+         </tr>`)
+      })
+
+      $('[data-company-status-btn]').on('click', function() {
+         const userId = parseInt($(this).attr('data-user-id'))
+         const companyId = parseInt($(this).attr('data-company-id'))
+         const status = $(this).is(':checked')
+         updateCompanyStatus(userId, companyId, status, $(this))
+      })
+
+      companiesModal.modal('show')
    }
 
    async function updateStatus(userId, active, btn) {
 
       try {
          await UserService.updateActive(userId, active)
-         alerty.show('success', 'Ebaaaaaaaa!', 'Usuário atualizado com sucesso!')
+         alerty.show('success', 'Ebaa!', 'Usuário atualizado com sucesso!')
+         renderPage()
+      } catch {
+         btn.prop('checked', !active)
+      }
+
+   }
+
+   async function updateCompanyStatus(userId, companyId, active, btn) {
+
+      try {
+         await UserService.updateCompanyActive(userId, companyId, active)
+         alerty.show('success', 'Ebaa!', 'Empresa atualizada com sucesso!')
          renderPage()
       } catch {
          btn.prop('checked', !active)
@@ -134,5 +198,4 @@ jQuery(function() {
    }
 
    renderPage()
-
 })

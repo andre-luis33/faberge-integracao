@@ -73,6 +73,6 @@
 @endsection
 
 @section('scripts')
-   <script type="module" src="{{asset('assets/js/pages/empresas.js')}}"></script>
+   <script type="module" src="{{asset('assets/js/pages/empresas.js?1')}}"></script>
 @endsection
 

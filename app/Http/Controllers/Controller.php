@@ -29,7 +29,7 @@ class Controller extends BaseController
 
             } else {
 
-               $logoUrl = session()->get('user.logo_url');
+               $logoUrl = session()->get('user.logo_url') ?? '';
 
                $company = new SessionCompanyDto(
                   (int) session()->get('user.company.id'),
