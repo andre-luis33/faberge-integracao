@@ -9,7 +9,7 @@ $isAdmin = session('user.admin')
       @if($isAdmin)
          <img alt="Logo Dealer" src="{{ asset('assets/img/logo-dealer.png') }}" width="200">
       @else
-         <img alt="Logo {{ session('user.company.name') }}" src="{{ session('user.logo_url') }}" width="150">
+         <img alt="Logo {{ session('user.company.name') }}" src="{{ session('user.logo_url') ?? asset('assets/img/logo-dealer.png') }}" width="150">
       @endif
    </header>
 

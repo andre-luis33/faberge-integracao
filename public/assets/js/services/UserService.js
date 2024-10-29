@@ -1,12 +1,22 @@
 import { API_URL } from "../config.js"
 
 /**
+ * @typedef {object} Company
+ * @property {number} id
+ * @property {string} name
+ * @property {string} cnpj
+ * @property {string} linx_company
+ * @property {string} linx_resale
+ * @property {boolean} active
+ */
+
+/**
  * @typedef {object} User
  * @property {number} id
  * @property {string} email
  * @property {string} name
  * @property {boolean} active
- * @property {string[]} companies
+ * @property {Company[]} companies
  * @property {string} created_at
  */
 
@@ -48,6 +58,17 @@ export async function updateActive(userId, active) {
    return $.ajax(config)
 }
 
+export async function updateCompanyActive(userId, companyId, active) {
+
+   const config = {
+      method: 'PUT',
+      url: `${URL}/${userId}/companies/${companyId}/active`,
+      data: JSON.stringify({ active }),
+   }
+
+   return $.ajax(config)
+}
+
 export default {
-   get, create, updateActive
+   get, create, updateActive, updateCompanyActive
 }

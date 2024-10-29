@@ -24,15 +24,28 @@ class UserController extends Controller
 
       $users = $this->user
          ->select(['id', 'name', 'email', 'active', 'created_at'])
-         ->with(['companies:id,user_id,name'])
+         ->with(['companies' => function ($query) {
+            $query->select(['id', 'cnpj', 'user_id', 'name', 'active'])
+               ->with(['integrationSettings:id,company_id,linx_company,linx_resale'])
+               ->orderBy('name');
+         }])
          ->where('admin', false)
          ->get();
 
       $users->transform(function($user) {
-         $companies = $user->companies->pluck('name');
-         unset($user->companies);
 
-         $user->companies = $companies;
+         $user->companies->makeHidden('user_id');
+
+         $user->companies->each(function($company) {
+
+            if($company->integrationSettings) {
+               $company->linx_resale  = $company->integrationSettings->linx_resale;
+               $company->linx_company = $company->integrationSettings->linx_company;
+            }
+
+            unset($company->integrationSettings);
+         });
+
          return $user;
       });
 
@@ -98,6 +111,30 @@ class UserController extends Controller
 
          $this->user
             ->where('id', $userId)
+            ->update([
+               'active' => $active
+            ]);
+
+         return response(status: 204);
+
+      } catch (\Exception $e) {
+         Log::error($e->getMessage());
+         return response()->json(['message' => 'Erro interno no servidor'], 500);
+      }
+
+   }
+
+   public function updateCompanyActive(Request $request, int $userId, int $companyId) {
+
+      $active = $request->input('active', true);
+
+      try {
+
+         $this->company
+            ->where([
+               'id' => $companyId,
+               'user_id' => $userId,
+            ])
             ->update([
                'active' => $active
             ]);

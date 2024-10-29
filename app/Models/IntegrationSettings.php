@@ -42,7 +42,8 @@ class IntegrationSettings extends Model
          ->join('users as u', 'u.id', '=', 'c.user_id')
          ->where([
             'i.enabled' => true,
-            'u.active' => true
+            'u.active' => true,
+            'c.active' => true,
          ])
          ->whereRaw("
                DATEDIFF(MINUTE,

@@ -62,5 +62,12 @@ class DatabaseSeeder extends Seeder
          'days' => '3',
          'company_id' => 1,
       ]);
+
+      \App\Models\User::create([
+         'name' => 'Admin Dealer',
+         'email' => 'admin@dealer.com.br',
+         'password' => Hash::make('senha123@@'),
+         'admin' => true
+      ]);
    }
 }

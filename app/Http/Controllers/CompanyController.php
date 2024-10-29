@@ -98,7 +98,6 @@ class CompanyController extends Controller
          ],
          'name' => 'required|string|max:100',
          'primary' => 'required|boolean',
-         'active' => 'required|boolean',
       ]);
 
       $company['user_id'] = $userId;
@@ -106,8 +105,8 @@ class CompanyController extends Controller
       // if(!$company['primary'])
       //    abort(400, 'Você não pode')
 
-      if($company['primary'] && !$company['active'])
-         abort(400, 'Você não pode desativar a empresa primária!');
+      // if($company['primary'] && !$company['active'])
+      //    abort(400, 'Você não pode desativar a empresa primária!');
 
       try {
 
